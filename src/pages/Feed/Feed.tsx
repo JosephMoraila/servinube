@@ -43,6 +43,7 @@ const Feed = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<FileProgress[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; file: string } | null>(null);
 
   // DOM References
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -77,6 +78,12 @@ const Feed = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    const handleGlobalClick = () => setContextMenu(null);
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
   }, []);
 
 
@@ -302,6 +309,41 @@ const Feed = () => {
     }
   };
 
+  const handleContextMenu = (e: React.MouseEvent, fileName: string) => {
+    e.preventDefault();
+    setContextMenu({
+      x: e.pageX,
+      y: e.pageY,
+      file: fileName
+    });
+  };
+
+  const handleDownload = async (fileName: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/download`, {
+        params: { 
+          fileName,
+          folder: currentFolder,
+          userId 
+        },
+        responseType: 'blob',
+        withCredentials: true
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("❌ Error al descargar archivo:", error);
+      alert("Error al descargar el archivo");
+    }
+  };
+
   return (
     <div className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
@@ -351,6 +393,7 @@ const Feed = () => {
               key={index}
               className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
               onClick={() => file.isDirectory && navigateToFolder(file.name)}
+              onContextMenu={(e) => !file.isDirectory && handleContextMenu(e, file.name)}
             >
               <div className="file-icon">
                 {file.isDirectory ? "📁" : "📄"}
@@ -360,6 +403,19 @@ const Feed = () => {
           ))}
         </div>
       </div>
+
+      {/* Add context menu */}
+      {contextMenu && (
+        <div 
+          className={`context-menu ${effectiveMode === 'dark' ? 'dark' : ''}`}
+          style={{ top: contextMenu.y, left: contextMenu.x }}
+        >
+          <div className="menu-item" onClick={() => handleDownload(contextMenu.file)}>
+            <span className="icon">⬇️</span>
+            DESCARGAR
+          </div>
+        </div>
+      )}
 
       {/* Hidden file input */}
       <input

@@ -2,11 +2,12 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import registerRouter from "./routes/auth"; // Asegúrate de que la ruta sea correcta
-import validateRouter from "./routes/validate"; // Asegúrate de que la ruta sea correcta
-import loginRouter from "./routes/login"; // Asegúrate de que la ruta sea correcta
-import logoutRouter from "./routes/logout"; // Asegúrate de que la ruta sea correcta
-import upload from "./routes/upload"; // Asegúrate de que la ruta sea correcta
+import registerRouter from "./routes/auth"; 
+import validateRouter from "./routes/validate";
+import loginRouter from "./routes/login";
+import logoutRouter from "./routes/logout"; 
+import upload from "./routes/upload";
+import downloadFile from "./routes/downloadFile";
 
 dotenv.config();
 
@@ -40,6 +41,8 @@ app.use("/api", loginRouter);  // Aquí se vincula el router de inicio de sesió
 app.use("/api", logoutRouter);  // Aquí se vincula el router de cierre de sesión
 
 app.use("/api", upload);  // Aquí se vincula el router de subida de archivos
+
+app.use("/api", downloadFile);  // Aquí se vincula el router de descarga de archivos
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -1,0 +1,201 @@
+.register-container {
+    max-width: 40vw; /* El ancho maximo en pantallas anchas es el 40% de su ancho de pantalla */
+    margin: 0 auto; /* Centra el formulario horizontalmente */
+    padding: 20px; /* Agrega espacio interno (padding) dentro del contenedor */
+    border-radius: 10px; /* Bordes redondeados para un diseño más amigable */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar un efecto de elevación */
+    background-color: #f9f9f9; /* Fondo blanco para el formulario */
+  }
+
+  .register-container.dark{
+    background-color: rgb(25, 25, 25);
+    box-shadow: 0 4px 8px rgba(255, 255, 255, 0.61); /* Sombra para dar un efecto de elevación */
+    color: white;
+  }
+
+  .register-container.dark a{
+    color: #4fa4ff;
+  }
+  
+  /* Estilo del título principal del formulario */
+  .register-container h1 {
+    text-align: center; /* Centra el título horizontalmente */
+    margin-bottom: 20px; /* Espacio debajo del título para separarlo del formulario */
+  }
+  
+  /* Estilos generales para el formulario */
+  .register-form {
+    display: flex;
+    flex-direction: column; /* Coloca los elementos (inputs, labels) en una columna */
+  }
+  
+  /* Grupo de cada campo del formulario (email, password, confirmación, etc.) */
+  .form-group {
+    margin-bottom: 15px; /* Espacio entre los campos del formulario */
+  }
+  
+  /* Estilo para las etiquetas (labels) de cada campo */
+  .form-group label {
+    display: block; /* Asegura que el label ocupe toda la línea (bloque) */
+    margin-bottom: 5px; /* Espacio debajo del label para separar del input */
+    font-weight: bold; /* Negrita para destacar el texto del label */
+  }
+
+  .register-form-option select{
+    width: 100%;
+    padding: 8px; /* Espacio interno para que el texto dentro del input no quede pegado a los bordes */
+    border: 1px solid #ccc; /* Bordes gris claros para los campos de entrada */
+    border-radius: 5px; /* Bordes redondeados para los inputs */
+    font-size: 16px; /* Tamaño del texto dentro de los campos de entrada */
+  }
+  
+  /* Estilo para los campos de entrada (input) */
+  .form-group input {
+    width: 100%; /* El campo de entrada toma todo el ancho disponible del contenedor */
+    padding: 8px; /* Espacio interno para que el texto dentro del input no quede pegado a los bordes */
+    border: 1px solid #ccc; /* Bordes gris claros para los campos de entrada */
+    border-radius: 5px; /* Bordes redondeados para los inputs */
+    font-size: 16px; /* Tamaño del texto dentro de los campos de entrada */
+  }
+  
+  /* Estilo para el contenedor de los términos y condiciones */
+  .terms {
+    display: flex; /* Organiza los elementos en fila: el checkbox y el texto */
+    align-items: center; /* Alinea verticalmente el checkbox con el texto */
+  }
+  
+  /* Espacio entre el checkbox y el texto */
+  .terms input {
+    margin-right: 10px; /* Añade espacio a la derecha del checkbox */
+  }
+  
+  /* Tamaño de la fuente del texto de términos y condiciones */
+  .terms label {
+    font-size: 14px; /* Ajusta el tamaño del texto para que sea más pequeño */
+  }
+  
+  /* Estilo del mensaje de error */
+  .error-message {
+    color: red; /* Texto rojo para indicar que hay un error */
+    margin-bottom: 15px; /* Espacio debajo del mensaje de error */
+    font-size: 14px; /* Tamaño de texto ligeramente más pequeño para mensajes de error */
+  }
+  
+  /* Estilo del botón de registro */
+  .register-button {
+    width: 97%; /* El botón toma todo el ancho disponible */
+    padding: 10px; /* Espacio interno para que el texto no quede pegado a los bordes */
+    background-color: #007bff; /* Color de fondo azul estándar */
+    color: white; /* El texto del botón es blanco */
+    border: none; /* Elimina el borde por defecto del botón */
+    border-radius: 5px; /* Bordes redondeados para el botón */
+    font-size: 1rem; /* Tamaño del texto del botón */
+    cursor: pointer; /* Cambia el cursor a una mano (puntero) para indicar que es clicable */
+    text-align: center;
+  }
+  
+  /* Efecto hover (al pasar el mouse por encima del botón) */
+  .register-button:hover {
+    background-color: #0056b3; /* Cambia a un tono de azul más oscuro al hacer hover */
+  }
+
+  .label-help-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  
+  .help-icon {
+    cursor: pointer;
+    font-size: 1rem;
+    color: #666;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltip {
+    visibility: hidden;
+    position: absolute;
+    background-color: #333;
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 200px;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 5px;
+    z-index: 1;
+  }
+  
+  .help-icon:hover .tooltip {
+    visibility: visible;
+  }
+  
+  /* Flecha del tooltip */
+  .tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+  }
+  
+  /* Modo oscuro */
+  .register-container.dark .help-icon {
+    color: #999;
+  }
+  
+  .register-container.dark .tooltip {
+    background-color: #555;
+  }
+  
+  .register-container.dark .tooltip::after {
+    border-color: #555 transparent transparent transparent;
+  }
+
+  .password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .toggle-password:focus {
+    outline: none;
+  }
+  
+  /* Ajusta el padding del input para que no se sobreponga con el botón */
+  .password-input-container input {
+    padding-right: 40px;
+  }
+  
+  /* Estilo para modo oscuro */
+  .register-container.dark .toggle-password {
+    color: #fff;
+  }
+  
+
+  @media (max-width: 768px) {
+    .register-container {
+      max-width: 90vw; /* El ancho maximo en celulares (pantalla angosta) es el 90% de su ancho de pantalla */
+    }
+  }

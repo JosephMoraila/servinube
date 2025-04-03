@@ -8,15 +8,16 @@ import loginRouter from "./routes/login";
 import logoutRouter from "./routes/logout"; 
 import upload from "./routes/upload";
 import downloadFile from "./routes/downloadFile";
+import API_CONFIG from "./utils/API_BASE_URL";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || "3000", 10);
 
 // Configuración de CORS
 app.use(cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173", // Permite solicitudes solo desde tu frontend
+    origin: API_CONFIG.baseURL || "http://localhost:5173", // Permite solicitudes desde cualquier origen
     methods: ["GET", "POST", "PUT", "DELETE"],  // Métodos permitidos
     allowedHeaders: ["Content-Type", "Authorization"],  // Encabezados permitidos
     credentials: true  // Si estás usando cookies o autenticación
@@ -51,6 +52,20 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Iniciar el servidor
-app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
+app.listen(port, "0.0.0.0", () => {
+    const interfaces = require('os').networkInterfaces();
+    const addresses = [];
+    for (let k in interfaces) {
+        for (let k2 in interfaces[k]) {
+            let address = interfaces[k][k2];
+            if (address.family === 'IPv4' && !address.internal) {
+                addresses.push(address.address);
+            }
+        }
+    }
+    console.log(`Servidor corriendo en:`);
+    console.log(`- Local: http://localhost:${port}`);
+    addresses.forEach(ip => {
+        console.log(`- Red local: http://${ip}:${port}`);
+    });
 });

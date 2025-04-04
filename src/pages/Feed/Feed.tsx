@@ -3,6 +3,7 @@ import axios from "axios";
 import { useAuth } from "../../components/ProtectedRoute/ProtectedRoute";
 import "./Feed.css";
 import { useDarkMode } from '../../contexts/DarkModeContext'
+import API_BASE_URL from "../../constants/PAGE_URL";
 
 /**
  * Interface representing a file upload progress
@@ -95,7 +96,7 @@ const Feed = () => {
     if (!userId) return;
 
     try {
-      const response = await axios.get(`http://localhost:3000/api/list`, {
+      const response = await axios.get(`${API_BASE_URL}/api/list`, {
         params: { folder: currentFolder, userId },
         withCredentials: true
       });
@@ -123,7 +124,7 @@ const Feed = () => {
     }
 
     try {
-      await axios.post("http://localhost:3000/api/create-folder", {
+      await axios.post(`${API_BASE_URL}/api/create-folder`, {
         folder: currentFolder ? `${currentFolder}/${folderName}` : folderName,
         userId,
       });
@@ -157,7 +158,7 @@ const Feed = () => {
         const formData = new FormData();
         formData.append("file", file);
         
-        await axios.post("http://localhost:3000/api/upload", formData, {
+        await axios.post(`${API_BASE_URL}/api/upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
           params: {
@@ -278,7 +279,7 @@ const Feed = () => {
         const formData = new FormData();
         formData.append("file", file);
         
-        await axios.post("http://localhost:3000/api/upload", formData, {
+        await axios.post(`${API_BASE_URL}/api/upload`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
           params: {
@@ -320,7 +321,7 @@ const Feed = () => {
 
   const handleDownload = async (fileName: string) => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/download`, {
+      const response = await axios.get(`${API_BASE_URL}/api/download`, {
         params: { 
           fileName,
           folder: currentFolder,

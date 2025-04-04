@@ -2,28 +2,56 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import registerRouter from "./routes/auth"; 
+import registerRouter from "./routes/auth";
 import validateRouter from "./routes/validate";
 import loginRouter from "./routes/login";
-import logoutRouter from "./routes/logout"; 
+import logoutRouter from "./routes/logout";
 import upload from "./routes/upload";
 import downloadFile from "./routes/downloadFile";
-import API_CONFIG from "./utils/API_BASE_URL";
 
 dotenv.config();
 
 const app = express();
 const port = parseInt(process.env.PORT || "3000", 10);
 
-// Configuración de CORS
+// Obtener direcciones IP locales dinámicamente
+const getLocalIPs = () => {
+    const interfaces = require("os").networkInterfaces();
+    const addresses: string[] = [];
+
+    // Aquí agregamos la declaración de tipo para `interfaces` y `address`
+    Object.values(interfaces).forEach((iface: any) => {
+        iface?.forEach((address: { family: string, internal: boolean, address: string }) => {
+            if (address.family === "IPv4" && !address.internal) {
+                addresses.push(`http://${address.address}:${5173}`);
+            }
+        });
+    });
+
+    // Agregar localhost de manera predeterminada
+    addresses.push(`http://localhost:${5173}`);
+    console.log("Direcciones IP locales:", addresses);
+    return addresses;
+};
+
+// Configuración de CORS dinámica
 app.use(cors({
-    origin: API_CONFIG.baseURL || "http://localhost:5173", // Permite solicitudes desde cualquier origen
-    methods: ["GET", "POST", "PUT", "DELETE"],  // Métodos permitidos
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean | string) => void) => {
+        const allowedOrigins = getLocalIPs();  // Obtener IPs locales dinámicamente
+        
+        // Verifica si el origen de la solicitud está en las IPs locales
+        if (allowedOrigins.includes(origin || "")) {
+            callback(null, true);  // Permite la solicitud
+        } else {
+            callback(new Error("Origen no permitido"), false);  // Rechaza la solicitud
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],  // Métodos permitidos
     allowedHeaders: ["Content-Type", "Authorization"],  // Encabezados permitidos
     credentials: true  // Si estás usando cookies o autenticación
 }));
 
-// Middleware para manejar JSON
+// Middleware para manejar JSON y cookies
 app.use(cookieParser());
 app.use(express.json());
 
@@ -33,39 +61,26 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Rutas de autenticación
-app.use("/api", registerRouter);  // Aquí se vincula el router de registro
-
-app.use("/api", validateRouter);  // Aquí se vincula el router de validación
-
-app.use("/api", loginRouter);  // Aquí se vincula el router de inicio de sesión
-
-app.use("/api", logoutRouter);  // Aquí se vincula el router de cierre de sesión
-
-app.use("/api", upload);  // Aquí se vincula el router de subida de archivos
-
-app.use("/api", downloadFile);  // Aquí se vincula el router de descarga de archivos
+app.use("/api", registerRouter);
+app.use("/api", validateRouter);
+app.use("/api", loginRouter);
+app.use("/api", logoutRouter);
+app.use("/api", upload);
+app.use("/api", downloadFile);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error(err.stack);  // Imprime el error en consola
+    console.error(err.stack);
     res.status(500).json({ message: "Algo salió mal en el servidor." });
 });
 
 // Iniciar el servidor
 app.listen(port, "0.0.0.0", () => {
-    const interfaces = require('os').networkInterfaces();
-    const addresses = [];
-    for (let k in interfaces) {
-        for (let k2 in interfaces[k]) {
-            let address = interfaces[k][k2];
-            if (address.family === 'IPv4' && !address.internal) {
-                addresses.push(address.address);
-            }
-        }
-    }
     console.log(`Servidor corriendo en:`);
-    console.log(`- Local: http://localhost:${port}`);
-    addresses.forEach(ip => {
-        console.log(`- Red local: http://${ip}:${port}`);
+
+    // Mostrar las direcciones IP locales obtenidas dinámicamente
+    const localIPs = getLocalIPs();
+    localIPs.forEach((ip) => {
+        console.log(`- Red local: ${ip}`);
     });
 });

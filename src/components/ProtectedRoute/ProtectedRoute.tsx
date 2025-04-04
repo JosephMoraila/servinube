@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../../constants/PAGE_URL";
 
 /**
  * Interface for the authentication context value
@@ -51,7 +52,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
      */
     const checkAuth = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/auth/validate", {
+        const response = await axios.get(`${API_BASE_URL}/api/auth/validate`, {
           withCredentials: true,
         });
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useLoadingBar } from '../../contexts/LoadingBarContext';
 import axios from 'axios';
-import API_CONFIG from '../../../backend/src/utils/API_BASE_URL';
+import API_BASE_URL from '../../constants/PAGE_URL';
 import '../../App.css';
 
 const Login = () => {
@@ -18,11 +18,10 @@ const Login = () => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-    console.log(`URL: ${API_CONFIG.baseURL}/api/login`);
 
     try {
       setIsLoadingBar(true);
-      const response = await axios.post(`${API_CONFIG.baseURL}/api/login`, {
+      const response = await axios.post(`${API_BASE_URL}/api/login`, {
         username,
         password
       }, {

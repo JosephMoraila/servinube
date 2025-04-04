@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useMessageBoxContext } from '../../contexts/MessageBoxContext';
 import axios from 'axios';
 import './Register.css'
+import API_BASE_URL from '../../constants/PAGE_URL';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   try {
-    const response = await axios.post("http://localhost:3000/api/register", {
+    const response = await axios.post(`${API_BASE_URL}/api/register`, {
       publicName: formData.userName,
       password: formData.password,
     }, {

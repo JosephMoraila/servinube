@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useMessageBoxContext } from '../../contexts/MessageBoxContext';
 import { useLoadingBar } from '../../contexts/LoadingBarContext';
+import API_BASE_URL from '../../constants/PAGE_URL';
 
 const SettingsAccount: React.FC = () => {
     const navigate = useNavigate();
@@ -27,7 +28,7 @@ const SettingsAccount: React.FC = () => {
     const handleLogout = async () => {
         setIsLoadingBar(true);
         try {
-            const response = await axios.post('http://localhost:3000/api/logout', {}, {
+            const response = await axios.post(`${API_BASE_URL}/api/logout`, {}, {
                 withCredentials: true
             });
     

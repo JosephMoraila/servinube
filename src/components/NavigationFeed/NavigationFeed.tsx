@@ -84,19 +84,10 @@ const Navigation: React.FC = () => {
             <li>
               {/*Se pone 'end' para que isActive se active solamene cuando coincide exactamente con /feed*/}
               <NavLink to="/feed" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Mesa
+                Feed
               </NavLink>
             </li>
             <li>
-              <NavLink to='/feed/citas' className={({ isActive }) => (isActive ? 'active' : '')}>
-                Citas
-              </NavLink>
-            </li>
-            <li>
-              {/*Aquí en la sub no lleva end, solo en el root porque si este sub esta activo marcará tambien el root*/}
-              <NavLink to="/feed/services" className={({ isActive }) => (isActive ? 'active' : '')}>
-                Servicios
-              </NavLink>
             </li>
           </ul>
         </div>
@@ -159,17 +150,7 @@ const Navigation: React.FC = () => {
             <ul>
               <li>
                 <NavLink to="/feed" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                  Mesa
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to='/feed/citas' className={({ isActive }) => (isActive ? 'active' : '')}>
-                  Citas
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to="/feed/services" className={({ isActive }) => (isActive ? 'active' : '')}>
-                  Servicios
+                  Feed
                 </NavLink>
               </li>
               <li>

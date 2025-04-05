@@ -8,6 +8,8 @@ import loginRouter from "./routes/login";
 import logoutRouter from "./routes/logout";
 import upload from "./routes/upload";
 import downloadFile from "./routes/downloadFile";
+import changePassword from "./routes/changePassword";
+import deleteAccount from "./routes/deleteAccount";
 
 dotenv.config();
 
@@ -67,6 +69,8 @@ app.use("/api", loginRouter);
 app.use("/api", logoutRouter);
 app.use("/api", upload);
 app.use("/api", downloadFile);
+app.use("/api", changePassword);
+app.use("/api", deleteAccount);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

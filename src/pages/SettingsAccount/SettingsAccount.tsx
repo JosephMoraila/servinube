@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import './SettingsAccount.css';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import MessageBox from '../../components/MessageBox/MessageBox';

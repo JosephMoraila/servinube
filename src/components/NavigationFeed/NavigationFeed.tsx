@@ -84,7 +84,7 @@ const Navigation: React.FC = () => {
             <li>
               {/*Se pone 'end' para que isActive se active solamene cuando coincide exactamente con /feed*/}
               <NavLink to="/feed" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                Feed
+                Mi Unidad
               </NavLink>
             </li>
             <li>
@@ -150,7 +150,7 @@ const Navigation: React.FC = () => {
             <ul>
               <li>
                 <NavLink to="/feed" end className={({ isActive }) => (isActive ? 'active' : '')}>
-                  Feed
+                  Mi Unidad
                 </NavLink>
               </li>
               <li>

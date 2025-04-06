@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 import registerRouter from "./routes/auth";
 import validateRouter from "./routes/validate";
 import loginRouter from "./routes/login";
@@ -10,6 +11,7 @@ import upload from "./routes/upload";
 import downloadFile from "./routes/downloadFile";
 import changePassword from "./routes/changePassword";
 import deleteAccount from "./routes/deleteAccount";
+import previewFileRouter from './routes/previewFile';
 
 dotenv.config();
 
@@ -57,6 +59,9 @@ app.use(cors({
 app.use(cookieParser());
 app.use(express.json());
 
+// Configurar carpeta de uploads como estática
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
 // Ruta de prueba
 app.get("/", (req: Request, res: Response) => {
     res.send("Servidor en funcionamiento");
@@ -71,6 +76,7 @@ app.use("/api", upload);
 app.use("/api", downloadFile);
 app.use("/api", changePassword);
 app.use("/api", deleteAccount);
+app.use("/api", previewFileRouter);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

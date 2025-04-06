@@ -45,6 +45,11 @@ const Feed = () => {
   const [uploadProgress, setUploadProgress] = useState<FileProgress[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; file: string } | null>(null);
+  const [preview, setPreview] = useState<{
+    url: string;
+    type: string;
+    name: string;
+  } | null>(null);
 
   // DOM References
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -345,6 +350,43 @@ const Feed = () => {
     }
   };
 
+  const handlePreview = async (fileName: string) => {
+    try {
+      console.log("🔍 Attempting preview for:", { fileName, folder: currentFolder, userId });
+      
+      const response = await axios.get(`${API_BASE_URL}/api/preview`, {
+        params: { 
+          fileName,
+          folder: currentFolder,
+          userId 
+        },
+        responseType: 'blob',
+        withCredentials: true
+      });
+
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const url = URL.createObjectURL(blob);
+        const type = response.headers['content-type'];
+        setPreview({ url, type, name: fileName });
+        console.log("✅ Preview successful:", { type });
+      } else {
+        throw new Error(`Server responded with status: ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error("❌ Preview error:", error.message);
+      alert("No se pudo previsualizar el archivo. Por favor, intente descargarlo.");
+    }
+  };
+
+  const handleFileClick = (file: { name: string; isDirectory: boolean }) => {
+    if (file.isDirectory) {
+      navigateToFolder(file.name);
+    } else {
+      handlePreview(file.name);
+    }
+  };
+
   return (
     <div className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} onDragOver={handleDragOver}
     onDragLeave={handleDragLeave}
@@ -393,7 +435,7 @@ const Feed = () => {
             <div
               key={index}
               className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
-              onClick={() => file.isDirectory && navigateToFolder(file.name)}
+              onClick={() => handleFileClick(file)}
               onContextMenu={(e) => !file.isDirectory && handleContextMenu(e, file.name)}
             >
               <div className="file-icon">
@@ -479,6 +521,54 @@ const Feed = () => {
               >
                 Crear
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de previsualización */}
+      {preview && (
+        <div className="modal">
+          <div className={`modal-content preview-modal ${effectiveMode === 'dark' ? 'dark' : ''}`}>
+            <div className="modal-header">
+              <h2>{preview.name}</h2>
+              <button onClick={() => {
+                URL.revokeObjectURL(preview.url);
+                setPreview(null);
+              }}>✖️</button>
+            </div>
+            <div className="modal-body preview-content">
+              {preview.type.startsWith('image/') && (
+                <img src={preview.url} alt={preview.name} />
+              )}
+              {preview.type.startsWith('video/') && (
+                <video controls>
+                  <source src={preview.url} type={preview.type} />
+                  Tu navegador no soporta el elemento de video.
+                </video>
+              )}
+              {preview.type.startsWith('audio/') && (
+                <audio controls>
+                  <source src={preview.url} type={preview.type} />
+                  Tu navegador no soporta el elemento de audio.
+                </audio>
+              )}
+              {preview.type === 'application/pdf' && (
+                <iframe
+                  src={preview.url}
+                  title={preview.name}
+                  width="100%"
+                  height="100%"
+                />
+              )}
+              {!preview.type.match(/^(image|video|audio|application\/pdf)/) && (
+                <div className="no-preview">
+                  <p>No hay vista previa disponible para este tipo de archivo</p>
+                  <button onClick={() => handleDownload(preview.name)}>
+                    Descargar archivo
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

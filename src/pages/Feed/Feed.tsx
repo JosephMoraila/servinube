@@ -4,6 +4,7 @@ import { useAuth } from "../../components/ProtectedRoute/ProtectedRoute";
 import "./Feed.css";
 import { useDarkMode } from '../../contexts/DarkModeContext'
 import API_BASE_URL from "../../constants/PAGE_URL";
+import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
 
 /**
  * Interface representing a file upload progress
@@ -526,52 +527,12 @@ const Feed = () => {
         </div>
       )}
 
-      {/* Modal de previsualización */}
       {preview && (
-        <div className="modal">
-          <div className={`modal-content preview-modal ${effectiveMode === 'dark' ? 'dark' : ''}`}>
-            <div className="modal-header">
-              <h2>{preview.name}</h2>
-              <button onClick={() => {
-                URL.revokeObjectURL(preview.url);
-                setPreview(null);
-              }}>✖️</button>
-            </div>
-            <div className="modal-body preview-content">
-              {preview.type.startsWith('image/') && (
-                <img src={preview.url} alt={preview.name} />
-              )}
-              {preview.type.startsWith('video/') && (
-                <video controls>
-                  <source src={preview.url} type={preview.type} />
-                  Tu navegador no soporta el elemento de video.
-                </video>
-              )}
-              {preview.type.startsWith('audio/') && (
-                <audio controls>
-                  <source src={preview.url} type={preview.type} />
-                  Tu navegador no soporta el elemento de audio.
-                </audio>
-              )}
-              {preview.type === 'application/pdf' && (
-                <iframe
-                  src={preview.url}
-                  title={preview.name}
-                  width="100%"
-                  height="100%"
-                />
-              )}
-              {!preview.type.match(/^(image|video|audio|application\/pdf)/) && (
-                <div className="no-preview">
-                  <p>No hay vista previa disponible para este tipo de archivo</p>
-                  <button onClick={() => handleDownload(preview.name)}>
-                    Descargar archivo
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <ModalPreviewFile 
+          preview={preview}
+          onClose={() => setPreview(null)}
+          onDownload={handleDownload}
+        />
       )}
     </div>
   );

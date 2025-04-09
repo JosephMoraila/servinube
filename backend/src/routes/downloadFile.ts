@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { asyncHandler } from '../utils/asyncHandler';
+import UPLOAD_DIRECTORY from '../utils/UPLOAD_DIRECTORY';
 import path from 'path';
 import fs from 'fs';
 
 const router = Router();
-const uploadDir = path.join(__dirname, "../uploads");
 
 /**
  * GET /download - Download a file
@@ -29,7 +29,7 @@ router.get("/download", asyncHandler(async (req: Request, res: Response) => {
   try {
     // Construct the file path
     const filePath = path.join(
-      uploadDir,
+      UPLOAD_DIRECTORY,
       userId.toString(),
       folder?.toString() || '',
       fileName.toString()

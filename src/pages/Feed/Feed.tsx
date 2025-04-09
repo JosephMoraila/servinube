@@ -248,6 +248,7 @@ const Feed = () => {
    * @param {React.DragEvent<HTMLDivElement>} e - The drag event
    */
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    if (preview) return; // No permitir drag si hay preview abierta
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
@@ -258,6 +259,7 @@ const Feed = () => {
    * @param {React.DragEvent<HTMLDivElement>} e - The drag event
    */
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (preview) return; // No permitir drag si hay preview abierta
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -270,6 +272,7 @@ const Feed = () => {
    * @async
    */
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    if (preview) return; // No permitir drop si hay preview abierta
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -380,6 +383,27 @@ const Feed = () => {
     }
   };
 
+  const handleDelete = async (fileName: string) => {
+    if (!confirm(`¿Estás seguro de que deseas eliminar "${fileName}"?`)) return;
+
+    try {
+      await axios.delete(`${API_BASE_URL}/api/deleteFile`, {
+        params: { 
+          fileName,
+          folder: currentFolder,
+          userId 
+        },
+        withCredentials: true
+      });
+      
+      await fetchFiles();
+      setContextMenu(null);
+    } catch (error) {
+      console.error("❌ Error al eliminar archivo:", error);
+      alert("Error al eliminar el archivo");
+    }
+  };
+
   const handleFileClick = (file: { name: string; isDirectory: boolean }) => {
     if (file.isDirectory) {
       navigateToFolder(file.name);
@@ -389,9 +413,13 @@ const Feed = () => {
   };
 
   return (
-    <div className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} onDragOver={handleDragOver}
-    onDragLeave={handleDragLeave}
-    onDrop={handleDrop}>
+    <div 
+      className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} 
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      style={{ pointerEvents: preview ? 'none' : 'auto' }}
+    >
 
           {/* Add this before your existing content */}
     <div className={`drop-overlay ${isDragging ? 'active' : ''} ${effectiveMode === 'dark' ? 'dark' : ''}`}>
@@ -457,6 +485,10 @@ const Feed = () => {
           <div className="menu-item" onClick={() => handleDownload(contextMenu.file)}>
             <span className="icon">⬇️</span>
             DESCARGAR
+          </div>
+          <div className="menu-item delete" onClick={() => handleDelete(contextMenu.file)}>
+            <span className="icon">🗑️</span>
+            ELIMINAR
           </div>
         </div>
       )}

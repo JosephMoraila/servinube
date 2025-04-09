@@ -12,6 +12,7 @@ import downloadFile from "./routes/downloadFile";
 import changePassword from "./routes/changePassword";
 import deleteAccount from "./routes/deleteAccount";
 import previewFileRouter from './routes/previewFile';
+import deleteFile from './routes/deleteFile';
 
 dotenv.config();
 
@@ -77,6 +78,7 @@ app.use("/api", downloadFile);
 app.use("/api", changePassword);
 app.use("/api", deleteAccount);
 app.use("/api", previewFileRouter);
+app.use("/api", deleteFile);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

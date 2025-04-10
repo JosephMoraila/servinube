@@ -195,7 +195,7 @@ const SettingsAccount: React.FC = () => {
 
     return (
         <div className="settings-container">
-            {messageMessageBox && <MessageBox message={messageMessageBox} color={colorMessageBox} />}
+            {messageMessageBox && <MessageBox message={messageMessageBox} />}
             <div className={`settings-sidebar ${useDarkMode().effectiveMode === 'dark' ? 'dark' : ''}`}>
                 {settingsOptions.map((option) => (
                     <button

@@ -4,6 +4,7 @@ import { useAuth } from "../../components/ProtectedRoute/ProtectedRoute";
 import "./Feed.css";
 import { useDarkMode } from '../../contexts/DarkModeContext'
 import API_BASE_URL from "../../constants/PAGE_URL";
+import { useMessageBoxContext } from "../../contexts/MessageBoxContext";
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
 
 /**
@@ -33,6 +34,8 @@ interface FileProgress {
 const Feed = () => {
   // Authentication context
   const { userId } = useAuth();
+
+  const {setMessageMessageBox, setColorMessageBox}= useMessageBoxContext();
 
   // File and folder management state
   const [files, setFiles] = useState<{ name: string; isDirectory: boolean }[]>([]);
@@ -107,17 +110,19 @@ const Feed = () => {
         withCredentials: true
       });
       
-      const formattedFiles = response.data.files.map((file: { name: string }) => ({
-        name: file.name,
-        isDirectory: !file.name.includes("."),
-      }));
+      const formattedFiles = response.data.files
+        .filter((file: { name: string }) => file.name !== '.trash') // Filtrar carpeta .trash
+        .map((file: { name: string }) => ({
+          name: file.name,
+          isDirectory: !file.name.includes("."),
+        }));
       
       setFiles(formattedFiles);
     } catch (error) {
       console.error("❌ Error al obtener archivos:", error);
     }
   };
-
+  
     /**
    * Creates a new folder in the current directory
    * @async
@@ -125,7 +130,14 @@ const Feed = () => {
    */
   const createFolder = async () => {
     if (!folderName || !userId) {
-      alert("Ingrese un nombre para la carpeta");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Ingrese un nombre para la carpeta");
+      return;
+    }
+
+    if (folderName === ".trash") {
+      setColorMessageBox('#ff0000');
+      setMessageMessageBox ("No se puede crear una carpeta con ese nombre.");
       return;
     }
 
@@ -140,7 +152,9 @@ const Feed = () => {
       setShowFolderModal(false);
     } catch (error) {
       console.error("❌ Error al crear carpeta:", error);
-      alert("Error al crear la carpeta");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al crear carpeta. Intente nuevamente.");
+      
     }
   };
 
@@ -193,7 +207,8 @@ const Feed = () => {
       }
     } catch (error) {
       console.error("❌ Error al subir archivos:", error);
-      alert("Error al subir uno o más archivos");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al subir uno o más archivos");
     } finally {
       setUploading(false);
       setUploadProgress([]);
@@ -312,7 +327,8 @@ const Feed = () => {
       await fetchFiles();
     } catch (error) {
       console.error("❌ Error al subir archivos:", error);
-      alert("Error al subir uno o más archivos");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al subir uno o más archivos");
     } finally {
       setUploading(false);
       setUploadProgress([]);
@@ -350,7 +366,8 @@ const Feed = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("❌ Error al descargar archivo:", error);
-      alert("Error al descargar el archivo");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al descargar el archivo");
     }
   };
 
@@ -379,13 +396,14 @@ const Feed = () => {
       }
     } catch (error: any) {
       console.error("❌ Preview error:", error.message);
-      alert("No se pudo previsualizar el archivo. Por favor, intente descargarlo.");
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("No se pudo previsualizar el archivo. Por favor, intente descargarlo.");
     }
   };
 
   const handleDelete = async (fileName: string) => {
-    if (!confirm(`¿Estás seguro de que deseas eliminar "${fileName}"?`)) return;
-
+    if (!confirm(`¿Estás seguro de que deseas mover "${fileName}" a la papelera?`)) return;
+  
     try {
       await axios.delete(`${API_BASE_URL}/api/deleteFile`, {
         params: { 
@@ -398,9 +416,21 @@ const Feed = () => {
       
       await fetchFiles();
       setContextMenu(null);
+      
+      // Mostrar notificación temporal
+      const notification = document.createElement('div');
+      notification.className = `notification ${effectiveMode === 'dark' ? 'dark' : ''}`;
+      notification.textContent = `${fileName} movido a la papelera`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+      
     } catch (error) {
-      console.error("❌ Error al eliminar archivo:", error);
-      alert("Error al eliminar el archivo");
+      console.error("❌ Error al mover archivo a papelera:", error);
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al mover el archivo a la papelera");
     }
   };
 

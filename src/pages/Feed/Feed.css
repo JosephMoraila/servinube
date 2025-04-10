@@ -345,3 +345,21 @@
 .context-menu.dark .menu-item:hover {
   background-color: #3c3c3c;
 }
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.notification.dark {
+  background-color: #2d5a30;
+  color: #e0e0e0;
+}

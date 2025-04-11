@@ -13,6 +13,7 @@ import changePassword from "./routes/changePassword";
 import deleteAccount from "./routes/deleteAccount";
 import previewFileRouter from './routes/previewFile';
 import deleteFile from './routes/deleteFile';
+import deleteFolder from "./routes/deleteFolder";
 
 dotenv.config();
 
@@ -79,6 +80,7 @@ app.use("/api", changePassword);
 app.use("/api", deleteAccount);
 app.use("/api", previewFileRouter);
 app.use("/api", deleteFile);
+app.use("/api", deleteFolder);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

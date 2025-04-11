@@ -21,7 +21,7 @@ router.delete('/deleteFile', asyncHandler(async (req: Request, res: Response) =>
         ? path.join(UPLOAD_DIRECTORY, userId.toString(), folder.toString(), fileName.toString())
         : path.join(UPLOAD_DIRECTORY, userId.toString(), fileName.toString());
 
-      const trashPath = path.join(trashDir, `${fileName.toString()}_${Date.now()}`);
+      const trashPath = path.join(trashDir, `${fileName.toString()}`);
 
       console.log(`Moviendo archivo a papelera: ${sourcePath} -> ${trashPath}`);
       

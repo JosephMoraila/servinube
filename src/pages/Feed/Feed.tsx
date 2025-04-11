@@ -48,7 +48,7 @@ const Feed = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<FileProgress[]>([]);
   const [isDragging, setIsDragging] = useState(false);
-  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; file: string } | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; file: string, isDirectory: boolean } | null>(null);
   const [preview, setPreview] = useState<{
     url: string;
     type: string;
@@ -335,12 +335,13 @@ const Feed = () => {
     }
   };
 
-  const handleContextMenu = (e: React.MouseEvent, fileName: string) => {
+  const handleContextMenu = (e: React.MouseEvent, fileName: string, isDirectory: boolean) => {
     e.preventDefault();
     setContextMenu({
       x: e.pageX,
       y: e.pageY,
-      file: fileName
+      file: fileName,
+      isDirectory
     });
   };
 
@@ -401,13 +402,13 @@ const Feed = () => {
     }
   };
 
-  const handleDelete = async (fileName: string) => {
-    if (!confirm(`¿Estás seguro de que deseas mover "${fileName}" a la papelera?`)) return;
+  const handleDelete = async (fileName: string, isDirectory: boolean) => {
+    if (!confirm(`¿Estás seguro de que deseas mover "${fileName}" ${isDirectory ? 'y todo su contenido' : ''} a la papelera?`)) return;
   
     try {
-      await axios.delete(`${API_BASE_URL}/api/deleteFile`, {
+      await axios.delete(`${API_BASE_URL}${isDirectory ? '/api/deleteFolder' : '/api/deleteFile'}`, {
         params: { 
-          fileName,
+          name: fileName,
           folder: currentFolder,
           userId 
         },
@@ -417,7 +418,6 @@ const Feed = () => {
       await fetchFiles();
       setContextMenu(null);
       
-      // Mostrar notificación temporal
       const notification = document.createElement('div');
       notification.className = `notification ${effectiveMode === 'dark' ? 'dark' : ''}`;
       notification.textContent = `${fileName} movido a la papelera`;
@@ -428,9 +428,9 @@ const Feed = () => {
       }, 3000);
       
     } catch (error) {
-      console.error("❌ Error al mover archivo a papelera:", error);
+      console.error(`❌ Error al mover ${isDirectory ? 'carpeta' : 'archivo'} a papelera:`, error);
       setColorMessageBox("#ff0000");
-      setMessageMessageBox("Error al mover el archivo a la papelera");
+      setMessageMessageBox(`Error al mover ${isDirectory ? 'la carpeta' : 'el archivo'} a la papelera`);
     }
   };
 
@@ -495,7 +495,7 @@ const Feed = () => {
               key={index}
               className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
               onClick={() => handleFileClick(file)}
-              onContextMenu={(e) => !file.isDirectory && handleContextMenu(e, file.name)}
+              onContextMenu={(e) => handleContextMenu(e, file.name, file.isDirectory)}
             >
               <div className="file-icon">
                 {file.isDirectory ? "📁" : "📄"}
@@ -512,11 +512,13 @@ const Feed = () => {
           className={`context-menu ${effectiveMode === 'dark' ? 'dark' : ''}`}
           style={{ top: contextMenu.y, left: contextMenu.x }}
         >
-          <div className="menu-item" onClick={() => handleDownload(contextMenu.file)}>
-            <span className="icon">⬇️</span>
-            DESCARGAR
-          </div>
-          <div className="menu-item delete" onClick={() => handleDelete(contextMenu.file)}>
+          {!contextMenu.isDirectory && (
+            <div className="menu-item" onClick={() => handleDownload(contextMenu.file)}>
+              <span className="icon">⬇️</span>
+              DESCARGAR
+            </div>
+          )}
+          <div className="menu-item delete" onClick={() => handleDelete(contextMenu.file, contextMenu.isDirectory)}>
             <span className="icon">🗑️</span>
             ELIMINAR
           </div>

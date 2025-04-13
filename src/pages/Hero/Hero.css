@@ -1,0 +1,127 @@
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  width: 100%;
+  position: relative;
+  padding-top: 20px;
+}
+
+
+
+  .hero-container {
+    margin: 0 auto;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Cambiado de center a flex-start */
+    min-height: calc(100vh - 72px);
+    padding: 2rem;
+    overflow-y: auto;
+    position: relative;
+}
+    
+  
+  
+  .hero-content { /*Es el Div que contiene todo Hero en general y está dentro del Main*/
+    display: flex;
+    flex-direction: column; /*La propiedad flex-direction: column; se utiliza dentro de un contenedor que tiene display: flex. Esta propiedad organiza los elementos 
+    hijos en una columna vertical.
+    En lugar de que los elementos se dispongan en fila (que es el comportamiento por defecto de flex), al usar column, cada elemento hijo se apila uno debajo del otro,
+    alineándose de arriba hacia abajo en el contenedor.*/
+    gap: 36px; /*Verticalmente dejamos una brecha/gap de 36 px*/
+  }
+  
+  .hero-container h1 {
+    font-weight: 800; /* Define el grosor del texto como extra bold. Los valores pueden variar entre 100 (delgado) y 900 (muy grueso). */
+    line-height: 102px; /* Define la altura de línea, lo que determina el espacio vertical entre las líneas de texto. Aquí se establece en 102px. Esto deja 102px de espacio debajo y arriba de h1 */
+    font-size: 7vw; /*Establece el tamaño de la fuente en 7% del ancho de la ventana. Esto significa que si cambias el 
+    tamaño de la ventana del navegador, el tamaño del texto se ajustará proporcionalmente, haciendo que sea más responsivo 
+    y se adapte mejor a diferentes dispositivos y tamaños de pantalla.*/
+    max-width: 100%; /*El ancho de h1 va a ser del 100% de su contenedor*/
+  }
+  
+  .hero-container p {
+    font-weight: 600;
+    color: var(--gray);
+    max-width: 100%; /*Define el ancho máximo del párrafo. Si el contenido es más corto que 400px, no se expandirá más allá de su tamaño natural. 
+    Si el contenido es más largo, el párrafo se ajustará a un ancho máximo de 400px, haciendo que el texto se distribuya en varias líneas si es necesario. 
+    Esto mejora la legibilidad del texto, especialmente en pantallas grandes.*/
+  }
+  
+  .hero-btn {
+    display: flex; /*La propiedad de display flex, ayuda a colocar las cajas como si fueran celdas de tablas, con un comportamiento predecible y adaptable.*/
+    gap: 40px; /*Deja un espacio de 30 px entre cada botón*/
+  }
+  
+  .hero-btn button {
+    font-size: 24px; /*El tamaño del font/letras de los botones es de 24 pixeles*/
+    height: 100%; /*Hacemos la altura de los botones para que tengan el 100% de altura de su contenedor padre que es un div con la clase hero-btn*/
+  }
+  
+  .secondary-btn {
+    background: transparent; /*El botón que dice registrarse lo hacemos transpatente*/
+    color: var(--gray);
+    border: 1px solid gray; /*El grosor es de un pixel solido de gris*/
+  }
+
+  .secondary-btn.dark {
+    color: white;
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  .p-ejemplo-hero {
+    font-size: 0.7rem;
+  }
+
+  .p-hero{
+    font-size: 1.5rem;
+  }
+  
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .hero-container { /*Es el Div que contiene todo Hero en general y está dentro del Main*/
+    flex-direction: column; /* Cambia la dirección a columna */
+    justify-content: center; /* Centra verticalmente */
+    align-items: center; /* Centra horizontalmente */
+    text-align: center; /*Centra el texto de hero y sus elementos hijos como h1 o p*/
+  }
+
+  .hero-content { /*Es el nombre de la clase que está en Main en Hero*/
+    max-width: 100%; /*Su ancho maximo es el mismo al de su padre y es la pantalla donde está*/
+    margin-bottom: 2rem; /* Añade espacio debajo del contenido */
+  }
+
+  .hero-container h1 {
+    font-size: 400%; /* Ajusta el tamaño de fuente para móviles */
+    line-height: 56px;
+    max-width: 100%;
+  }
+
+  .hero-container p {
+    max-width: 100%; /* Elimina la restricción de ancho para pantallas pequeñas */
+    font-size: 18px; /* Tamaño más pequeño para el texto */
+  }
+
+    .hero-btn { /*El área de botones tienen una columna en caso que se este en celular para que estén apilados uno arriba del otro*/
+    flex-direction: column; /* Coloca los botones uno debajo del otro */
+    gap: 20px; /* Reduce el espacio entre los botones tanto horizontal como vertical depende como se establecio flex-direction */
+  }
+
+    .hero-container{
+    font-size: 70%; /*En celular las letras/fonts tienen el 70% del padre donde están, esto para adaptarse mejor a la pantalla*/
+    }
+
+    .p-ejemplo-hero {
+      font-size: 0.5rem !important;
+    }
+}
+
+@media (min-width: 658px) and (max-width: 1024px) and (orientation: landscape) {
+  /* Estilos para modo horizontal en celular */
+  .hero-container h1 {
+    font-size: 300%; /*El tamaño de las letras son el 300% del tamaño de su padre, esto para que se adapte a la pantalla*/
+  }
+}

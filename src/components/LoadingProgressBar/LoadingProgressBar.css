@@ -1,0 +1,55 @@
+/* Barra de carga */
+.loading-bar {
+    position: fixed; /*Ponemos la barra en una posición fija*/
+    top: 0; /*Los ponemos en esas posiciones*/
+    left: 0;
+    width: 100%; 
+    height: 4px;
+    background: transparent;
+    overflow: hidden;
+    z-index: 9999;
+    display: none; /* Oculta por defecto */
+  }
+  
+  /* Muestra la barra de carga cuando está en progreso */
+  .loading-bar.loading {
+    background: rgba(0, 0, 0, 0.1);
+    display: block; /* Muestra la barra solo cuando isLoading es true. Hace que la barra de carga se vuelva visible. Además, 
+    display: block asegura que la barra de carga ocupe todo el ancho disponible (100% de la pantalla) y se renderice como un 
+    bloque en la parte superior de la página.*/
+  }
+  
+  /* Barra de progreso */
+  .loading-progress {
+    width: 100%;
+    height: 100%;
+    background-color: #007bff; /* Color de la barra */
+    transform: translateX(-100%); /* Inicia fuera de la vista */
+    animation: loading-animation 2s linear infinite; /* Animación continua */
+  }
+  
+  /* Animación de la barra */
+  @keyframes loading-animation {
+    0% { /*EL estado de la animación en su inicio de ciclo*/
+      transform: translateX(-100%); /* Comienza fuera de la vista a la izquierda. Esta propiedad mueve el elemento completamente 
+      fuera de la vista a la izquierda, específicamente a un 100% de su propio ancho. Básicamente, la barra de progreso comienza 
+      fuera de la pantalla, del lado izquierdo.*/
+    }
+    100% { /*El estado de la animación en su final de ciclo*/
+      transform: translateX(100%); /* Termina fuera de la vista a la derecha. Esta propiedad mueve el elemento completamente fuera 
+      de la vista a la derecha, desplazando la barra de progreso a un 100% de su propio ancho hacia la derecha, saliendo del área 
+      visible. */
+    }
+  }
+
+  
+  /* Media query para pantallas pequeñas */
+@media (max-width: 668px) {
+    .loading-bar {
+      height: 7px; /* Reducir altura en pantallas pequeñas */
+    }
+  
+    .loading-progress {
+      animation-duration: 1.0s; /* Hacer la animación un poco más rápida en móviles */
+    }
+  }

@@ -1,0 +1,153 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/*Esto solo aplica los estilos a todo el documento y solo esta en App.jsx ya que son estilos que se aplican globalmente.
+Mientras que los estilos de Navigation o Hero solo se importan es sus respectivos archivos y solo se aplica el estilo en ese archivo*/
+
+/*:root define variables CSS que se pueden reutilizar en todo el documento y crea una variables red y gray*/
+:root {
+  --bluejeans: #5e60da;
+  --gray: #2e2e2e;
+}
+
+/* 
+  El selector universal (*) aplica estos estilos a todos los elementos de la página. 
+  - margin: 0 elimina los márgenes predeterminados de todos los elementos.
+  - padding: 0 elimina los rellenos (espacios internos) predeterminados de todos los elementos.
+  - box-sizing: border-box asegura que el padding y los bordes de los elementos no aumenten/sumen el tamaño total del ancho o alto. 
+    Esto significa que el width y height especificados vienen incluidos el contenido, padding y bordes, lo que facilita el control de las dimensiones.
+*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 
+  El selector "body" se aplica al cuerpo de la página web.
+  - font-family: "Poppins", sans-serif especifica la fuente que se usará en el texto de toda la página.
+    - "Poppins" es una fuente personalizada importada desde Google Fonts.
+    - "sans-serif" es una familia genérica que actúa como respaldo en caso de que "Poppins" no se cargue correctamente.
+    Al establecer la fuente en el body, todos los elementos de texto heredan esta fuente a menos que se sobrescriba en otro lugar.
+*/
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: white;
+  transition: background-color 0.5s ease /*Transiciones para fondos*/
+}
+
+body h1, 
+body h2, 
+body p,
+body span,
+body div,
+body a{
+  color:#000000
+}
+
+body tbody tr:hover{
+  background-color: #d4d4d4;
+  cursor: pointer;
+}
+
+body.dark-mode,
+body.dark-mode tbody{ /*Al body completo se pone todo completamente negro*/
+  background-color: #000000;
+}
+
+body.dark-mode tbody tr:hover{
+  background-color: #272727;
+  cursor: pointer;
+}
+
+/*Como el fondo es negro, las letras son blancas*/
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode div,
+body.dark-mode a {
+  color: #ffffff; /* Aplica color de texto blanco a varios elementos */
+  transition: color 0.5s ease, background-color 0.5s ease; /* Transición para el color y el fondo */
+}
+
+/* 
+  El selector "button" aplica estilos a todos los botones de la página.
+  
+  - all: unset; 
+    - Elimina todos los estilos predeterminados del botón, como bordes, márgenes, fondos, etc., dejando el botón sin formato. Pero si un botón más adelante en el codigo
+    se aplica un estilo sobreescribe a unset y se aplica estilo
+  
+  - padding: 1% 6%;
+    - Aplica un relleno interno (padding) proporcional al tamaño del botón. 
+    - 1% en el eje vertical (arriba y abajo) y 6% en el eje horizontal (izquierda y derecha), basado en el tamaño del botón.
+  
+  - background: var(--red); 
+    - Establece el color de fondo del botón usando la variable CSS personalizada "--red" (en este caso, rojo).
+  
+  - height: 32%;
+    - Define la altura del botón como el 32% del contenedor o elemento padre.
+  
+  - color: white;
+    - Establece el color del texto dentro del botón a blanco.
+  
+  - font-weight: 500; 
+    - Define el grosor del texto (font-weight) a 500, lo que lo hace ligeramente más grueso que el texto normal (400) pero no tan pesado como negrita completa.
+*/
+button {
+  all: unset;
+  padding: 1% 6%;
+  background: var(--bluejeans);
+  height: 32%;
+  color: white;
+  font-weight: 500;
+  cursor: pointer; /* Esto asegura que aparezca la mano al pasar el mouse */
+}
+
+nav {
+  /* Establece un modelo de caja flexible para el elemento <nav>.
+     Esto permite alinear y distribuir los elementos dentro de él de manera flexible. */
+  display: flex;
+
+  /* Distribuye los elementos hijos del <nav> (como links o botones) uniformemente
+     con espacio alrededor de ellos. Esto significa que habrá espacio igual entre los elementos y entre los bordes del contenedor. */
+  justify-content: space-around;
+
+  /* Fija la altura del elemento <nav> a 72 píxeles.
+     Todos los elementos dentro del <nav> se ajustarán a esta altura. */
+  height: 72px;
+
+  /* Alinea verticalmente los elementos hijos dentro del <nav> en el centro.
+     Esto significa que todos los elementos estarán centrados verticalmente en relación con la altura de 72 píxeles. */
+  align-items: center;
+  
+}
+
+/*nav ul hace que solo se aplique a los ul que esten dentro de un nav, se usa en Navigation.jsx*/
+nav ul { 
+  /* Establece un modelo de caja flexible para el elemento <ul>, lo que permite que
+     los elementos hijos (en este caso, las listas <li>) se distribuyan de forma horizontal. */
+  display: flex;
+
+  /* Elimina los estilos de lista predeterminados (como viñetas o números) del <ul>,
+     haciendo que las listas aparezcan sin marcadores visuales. */
+  list-style: none;
+
+  /* Añade un espacio de 24 píxeles entre cada elemento hijo <li> dentro del <ul>.
+     Esto separa los elementos del menú horizontalmente. */
+  gap: 50px;
+  
+}
+
+/*Nav se usa en Components/Navigation/Navigation.jsx*/
+nav ul li a {
+ text-decoration: none; /* Elimina el subrayado de los enlaces */
+ color: inherit; /* Hereda el color del texto del elemento padre */
+ font-size: 125%;
+ transition: font-weight 0.5s linear; /* Transición para color y peso de fuente */;
+}
+
+/* Estilo para los enlaces dentro del <ul>, se usa en Navigation.jsx y si una ruta esta activa*/
+nav ul li a.active {
+   /* Cambia el color del texto a gris cuando el enlace está activo */
+  font-weight: bold; /* Hace que el texto activo sea negrita */
+}

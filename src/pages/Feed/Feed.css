@@ -1,0 +1,365 @@
+.feed-container {
+  padding: 20px;
+  height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.feed-container.dark{
+  background-color: #000000;
+}
+
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+}
+
+.feed-header.dark{
+  background-color: #000000;
+}
+
+.feed-title {
+  font-size: 18px;
+  color: #202124;
+}
+
+.new-button {
+  position: relative;
+  display: inline-block;
+}
+
+.new-button button {
+  background-color: white;
+  color: #202124;
+  border: 1px solid #dadce0;
+  padding: 8px 24px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.new-button button:hover {
+  background-color: #f8f9fa;
+}
+
+.new-button.dark button{
+  background-color: #000000;
+  color: white;
+}
+
+.new-button.dark button:hover{
+  background-color: #202124;
+}
+
+.new-menu {
+  position: absolute;
+  top: calc(100% + 4px); /* Adjust position to account for margin */
+  right: 0; /* Align to right instead of left */
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  min-width: 200px;
+  z-index: 1000;
+  /* Remove margin-top and use calc() in top property instead */
+}
+
+.new-menu.dark{
+  background-color: #000000;
+  color: white;
+  box-shadow: 0 2px 10px rgba(247, 247, 247, 0.741);
+}
+
+.new-menu.dark div:hover{
+  background-color: #202124;
+  color: white;
+}
+
+.menu-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #202124;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #f8f9fa;
+}
+
+.menu-item .icon {
+  font-size: 18px;
+}
+
+.navigation {
+  padding: 16px;
+  color: #5f6368;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.files-container {
+  padding: 16px;
+}
+
+.files-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  padding: 16px;
+}
+
+.file-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  border: 1px solid #dadce0;
+  transition: all 0.2s;
+}
+
+.file-item.dark{
+  background-color: #000000;
+}
+
+.file-item.dark:hover{
+  background-color: #202124;
+}
+
+.file-item:hover {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.file-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #202124;
+  word-break: break-word;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-title {
+  font-size: 16px;
+  color: #202124;
+  font-weight: 500;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.modal-footer button {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.modal-footer button.cancel {
+  background-color: transparent;
+  color: #5f6368;
+  border: none;
+}
+
+.modal-footer button.confirm {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+}
+
+.upload-progress {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  max-width: 300px;
+  z-index: 1000;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.upload-progress.dark{
+  background-color: #000000;
+  box-shadow: 0 2px 10px rgba(247, 247, 247, 0.741);
+}
+
+.button-back-folder{
+  background-color: #1a73e8;
+  border-radius: 40px;
+  font-size: 0.8rem;
+}
+
+.button-back-folder:hover{
+  background-color: #114f9f;
+}
+
+.progress-item {
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  background: #f8f9fa;
+}
+
+.progress-item.dark{
+  background-color: #000000;
+  color: white;
+}
+
+.filename {
+  font-size: 13px;
+  color: #202124;
+  display: block;
+  margin-bottom: 8px;
+  word-break: break-all;
+}
+
+.progress-bar {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #1a73e8;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #5f6368;
+  margin-top: 4px;
+  display: block;
+  text-align: right;
+}
+
+
+.drop-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1100;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: white;
+  border: 3px dashed white;
+  margin: 20px;
+  pointer-events: none; /* Add this line */
+  opacity: 0; /* Add this line */
+  transition: opacity 0.2s ease; /* Add this line */
+}
+
+.drop-overlay.active {
+  display: flex;
+  opacity: 1; /* Change this line */
+}
+
+.drop-overlay.dark {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #1a73e8;
+  color: #1a73e8;
+}
+
+.drop-overlay-content {
+  text-align: center;
+}
+
+.drop-overlay-content .icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.context-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 0;
+  min-width: 150px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.context-menu.dark {
+  background: #2c2c2c;
+  border-color: #444;
+  color: white;
+}
+
+.context-menu .menu-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.context-menu .menu-item:hover {
+  background-color: #f5f5f5;
+}
+
+.context-menu.dark .menu-item:hover {
+  background-color: #3c3c3c;
+}
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.notification.dark {
+  background-color: #2d5a30;
+  color: #e0e0e0;
+}

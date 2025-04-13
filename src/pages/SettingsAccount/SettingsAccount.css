@@ -1,0 +1,201 @@
+.settings-container {
+    display: flex;
+    height: 100%;
+    background-color: #f9f9f9;
+    color: #000000;
+  }
+  
+  /* Estilo de la barra lateral */
+  .settings-sidebar {
+    transition: color 0.5s ease; /* Añade la transición solo para el color del texto */
+    width: 20%;
+    color: black;
+    background-color: #ffffff;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-wrap: wrap; /* Permite que las opciones se acomoden de forma responsiva */
+  }
+
+  .settings-sidebar.dark{
+    background-color: #000000;
+  }
+  
+  .settings-option {
+    background: none;
+    color: #000000;
+    padding: 12px 15px;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1.2rem; /* Usamos rem para hacer la fuente más escalable */
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    width: 100%; /* Las opciones de configuración tomarán el ancho disponible */
+    box-sizing: border-box; /* Asegura que el padding no sobresalga del ancho */
+    height: 10vh;
+  }
+
+  .settings-option.dark{
+    color: white;
+  }
+  
+  .settings-option:hover,
+  .settings-option.active {
+    color: #000000;
+    background-color: #d4d4d4;
+  }
+  
+  .settings-option.dark:hover,
+  .settings-option.active.dark {
+    background-color: #303030;
+    color: white;
+  }
+
+  /* Estilo del contenido */
+  .settings-content {
+    transition: color 0.5s ease; /* Añade la transición solo para el color del texto */
+    color: #000000;
+    flex: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    border-left: 2px solid #e0e0e0;
+  }
+
+  .settings-content.dark {
+    background-color: black;
+    color: white; /* Cambia también el color de texto */
+  }
+
+  .settings-content input{
+    width: 40%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+
+  .settings-content button{
+    margin-top: 10px;
+    height: 1.5rem;
+    border-radius: 15px;
+  }
+
+  
+  .settings-content h2 {
+    margin-bottom: 10px;
+    font-size: 1.6rem;
+    color: #34495e;
+  }
+
+  .delete-accout-button{
+    background-color: red;
+  }
+
+  .delete-accout-button:hover{
+    background-color: darkred;
+  }
+
+  .list-error-settings{
+    margin-left: 2%;
+  }
+  
+  /* Media Queries para dispositivos con pantallas más pequeñas */
+  @media (max-width: 768px) {
+    /* Para pantallas medianas, reducimos el tamaño de los botones */
+    .settings-option {
+      font-size: 1rem; /* Menor tamaño de fuente en pantallas más pequeñas */
+      padding: 10px 12px; /* Reducimos padding para que el botón no ocupe mucho espacio */
+      height: unset; /*El 10vh se anula*/
+    }
+  
+    .settings-container {
+      flex-direction: column;
+    }
+  
+    .settings-sidebar {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 10px;
+    }
+  
+    .settings-option {
+      flex: 1;
+      text-align: center;
+      font-size: 14px;
+    }
+  
+    .settings-content {
+      border-left: none;
+      border-top: 2px solid #e0e0e0;
+      padding: 15px;
+    }
+  
+    .settings-content h2 {
+      font-size: 1.4rem;
+    }
+
+    .settings-content input{
+        width: 100%;
+      }
+
+      .list-error-settings{
+        margin-left: 4%;
+      }
+      
+  }
+  
+  /* Media Query para pantallas pequeñas (hasta 768px) */
+  @media (max-width: 768px) {
+    .settings-container {
+      flex-direction: column;
+    }
+  
+    .settings-sidebar {
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-around;
+      gap: 5px;
+    }
+  
+    .settings-option {
+      flex: 1;
+      text-align: center;
+      font-size: 0.9rem; /* Reducimos aún más el tamaño de la fuente */
+      padding: 8px 10px; /* Reducción adicional en el padding */
+    }
+  
+    .settings-content {
+      border-left: none;
+      border-top: 2px solid #e0e0e0;
+      padding: 10px;
+    }
+  
+    .settings-content h2 {
+      font-size: 1.2rem; /* Reducimos el tamaño del encabezado */
+    }
+  }
+  
+  /* Media Query para pantallas aún más pequeñas (hasta 480px) */
+  @media (max-width: 480px) {
+    .settings-option {
+      font-size: 0.8rem; /* El tamaño de la fuente se hace aún más pequeño */
+      padding: 6px 8px; /* Ajuste del padding */
+    }
+  
+    .settings-content {
+      padding: 8px; /* Ajuste de padding en el contenido */
+    }
+  
+    .settings-content h2 {
+      font-size: 1rem; /* Ajustamos el tamaño del encabezado */
+    }
+
+    .list-error-settings{
+      margin-left: 10%;
+    }
+    
+  }
+  

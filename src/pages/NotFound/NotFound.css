@@ -1,0 +1,43 @@
+.NotFoundMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; 
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10vh 2rem 2rem; /* Agrega un margen superior sin pegarlo completamente */
+  text-align: center;
+}
+
+.NotFoundMessage h1 {
+  font-size: 2.5em;
+  margin-bottom: 1rem;
+  max-width: 90%;
+}
+
+.NotFoundMessage p {
+  max-width: 80%;
+  font-size: 1.2em;
+}
+
+.NotFoundMessage img {
+  contain: content;
+  width: 30%;
+}
+
+/* Responsive: Ajusta en pantallas pequeñas */
+@media (max-width: 600px) {
+  .NotFoundMessage {
+    padding-top: 8vh; /* Menos espacio en pantallas pequeñas */
+  }
+
+  .NotFoundMessage h1 {
+    font-size: 2em;
+  }
+
+  .NotFoundMessage img {
+    width: 40%;
+    max-width: 120px;
+  }
+}

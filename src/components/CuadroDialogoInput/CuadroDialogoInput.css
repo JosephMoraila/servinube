@@ -1,0 +1,93 @@
+/* Estilo base para el modal */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 70vw;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-content.dark{
+    background-color: black;
+}
+
+/* Entrada de texto */
+.dialog-input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Contenedor de botones */
+.dialog-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+/* Botones */
+.dialog-buttons button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Botón de confirmar */
+.dialog-buttons button:first-child {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Botón de cancelar */
+.dialog-buttons button:last-child {
+    background-color: #ccc;
+    color: black;
+}
+
+/* Estilos para botones deshabilitados */
+.dialog-buttons button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .dialog-content {
+        width: 90%; /* Hace que el modal sea más pequeño en pantallas pequeñas */
+        padding: 15px; /* Reducimos el padding */
+    }
+
+    .dialog-buttons {
+        flex-direction: column; /* Pone los botones uno debajo del otro */
+        align-items: stretch; /* Los botones ocupan todo el ancho disponible */
+        width: 100%;
+    }
+
+    .dialog-buttons button {
+        width: 100%; /* Los botones ocuparán todo el ancho disponible */
+        margin: 5px 0; /* Añadimos un pequeño margen entre los botones */
+    }
+}
+
+@media (max-width: 767px) {
+    .dialog-buttons{
+        width: 85%;
+    }
+}

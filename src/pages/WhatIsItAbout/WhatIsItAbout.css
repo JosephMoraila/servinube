@@ -1,0 +1,122 @@
+.WhatIsAbout {
+    display: flex;
+    flex-direction: column; /* Organiza los elementos en columna */
+    max-width: 100%;
+    align-items: center; /* Centra los elementos horizontalmente */
+    min-height: 100vh; /* Asegura que ocupe al menos el 100% de la altura de la pantalla */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+    box-sizing: border-box; /* Para incluir el padding en el tamaño total del contenedor */
+    padding: 20px; /* Padding opcional para darle espacio interno */
+    margin-bottom: 20vh; /* Asegura que haya espacio en la parte inferior */
+    padding-bottom: 50px; /* Asegura que haya un margen adicional en la parte inferior */
+}
+
+/* ...existing code... */
+
+.WhatIsAbout img {
+    margin: 40px;
+    width: 30vw; /* Reducido de 38vw a 30vw */
+    max-width: 10vw; /* Añadido un máximo para evitar imágenes demasiado grandes */
+    height: auto; /* Mantiene la proporción de aspecto */
+    contain: content;
+}
+
+.WhatIsAbout h1 {
+    overflow-wrap: break-word; /* Permite que las palabras largas se dividan */
+    word-wrap: break-word; /* Para compatibilidad con navegadores más antiguos */
+    text-align: center;
+    font-size: 3em;
+}
+
+.WhatIsAbout h2 {
+    overflow-wrap: break-word; /* Permite que las palabras largas se dividan */
+    word-wrap: break-word; /* Para compatibilidad con navegadores más antiguos */
+    text-align: center;
+}
+
+.WhatIsAbout p {
+    text-align: center;
+}
+
+
+
+.WhatIsAbout hr {
+    border: none; /* Elimina cualquier borde predeterminado */
+    border-top: 2px dotted #ccc; /* Línea horizontal con grosor y color */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    margin-top: 5dvh;
+    margin-bottom: 5dvh;
+}
+
+.images-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.folder-image {
+    position: absolute;
+    left: 45%;
+    transform: translate(-50%, -80%); /* Lo mueve justo encima de la flecha */
+    width: 6vw !important; /* Ajusta el tamaño en relación con el ancho de la pantalla */
+
+}
+
+.iconPhoto-image{
+    position: absolute;
+    left: 45%;
+    transform: translate(-50%, 80%); /* Lo mueve justo abajo de la flecha */
+    width: 6vw !important; /* Ajusta el tamaño en relación con el ancho de la pantalla */
+}
+
+/* Estilos para pantallas pequeñas */
+@media (max-width: 768px) {
+    .WhatIsAbout {
+        padding: 10px; /* Reduce el padding en pantallas pequeñas */
+        margin-bottom: 10vh; /* Reduce el margen inferior en pantallas pequeñas */
+    }
+
+    .WhatIsAbout img {
+        width: 80vw; /* Haz que la imagen ocupe más espacio en pantallas pequeñas */
+    }
+
+    .WhatIsAbout h1 {
+        font-size: 2em; /* Reduce el tamaño de la fuente en pantallas pequeñas */
+    }
+
+    .WhatIsAbout hr {
+        margin-top: 10dvh;
+        margin-bottom: 10dvh;
+    }
+
+    .arrow-image {
+        transform: rotate(90deg);
+    }
+
+    
+    .WhatIsAbout img {
+        width: 60vw; /* Reducido de 80vw a 60vw */
+        max-width: 30vw; /* Límite máximo en pantallas pequeñas */
+        margin: 5vh; /* Reducir el margen en pantallas pequeñas */
+    }
+
+    .images-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .folder-image {    
+        transform: translate(5vw, 4vh); /* Lo mueve justo al lado derecho de la flecha */
+        width: 12vw !important; /* Ajusta el tamaño en relación con el ancho de la pantalla */
+    
+    }
+
+    .iconPhoto-image{
+        transform: translate(-25vw, 4vh); /* Lo mueve justo al lado izquierdo de la flecha */
+        width: 12vw !important; /* Ajusta el tamaño en relación con el ancho de la pantalla */
+    }
+
+}
+

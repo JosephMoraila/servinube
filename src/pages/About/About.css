@@ -1,0 +1,55 @@
+.AboutDiv {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    align-items: center;
+    min-height: 100vh; /* Altura mínima del 100% del viewport */
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2rem; /* Padding relativo */
+    overflow: auto; /* Permite scroll si hay más contenido */
+}
+
+    
+  
+.AboutDiv h1{
+    overflow-wrap: break-word; /* Permite que las palabras largas se dividan */
+    word-wrap: break-word; /* Para compatibilidad con navegadores más antiguos */
+    text-align: center;
+    font-size: 3em
+  
+    }
+  
+.AboutDiv p{
+    text-align: center;
+}
+
+
+.LogosAbout{
+    display: flex;
+}
+
+.LogosAbout img {
+    max-height: 20vh; /* Máximo 20% de la altura de la pantalla */
+    max-width: 90%; /* Máximo 90% del ancho del contenedor */
+    object-fit: contain; /* Mantén la proporción original */
+}
+
+.AboutDiv hr {
+    border: none; /* Elimina cualquier borde predeterminado */
+    border-top: 2px dotted #ccc; /* Línea horizontal con grosor y color */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+    margin-top: 5dvh;
+    margin-bottom: 5dvh;
+}
+
+@media (max-width: 458px){
+    .LogosAbout{
+        flex-direction: column;
+        align-items: center;
+    }
+    .LogosAbout img{
+        height: auto;
+        width: 50%;
+    }
+}

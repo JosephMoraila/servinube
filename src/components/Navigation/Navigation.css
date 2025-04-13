@@ -1,0 +1,247 @@
+.container-nav {
+  display: flex;
+  justify-content: space-between; /* Distribuye los elementos hacia los extremos (izquierda y derecha) */
+  align-items: center;
+  padding: 10px 20px;
+  max-width: 100%;
+  width: 100vw;
+}
+
+/* Contenedor izquierdo (logo y enlaces de navegación) */
+.container-left {
+  display: flex;
+  align-items: center;
+  gap: 50px; /* Espacio entre el logo y los enlaces */
+}
+
+/* Contenedor derecho (tema y botón de login) */
+.container-right {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espacio entre el icono de tema y el botón de login */
+  margin-right: 50px;
+  cursor: pointer;
+}
+
+/* Estilo para el logo */
+.container-nav img {
+  width: 50px;
+  height: auto;
+}
+
+.enlaces ul {
+  display: flex;
+  gap: 50px;
+}
+
+/* Estilos generales */
+.enlaces.ThemeLogIn {
+  all: unset;
+  display: flex;
+}
+
+/* Oculta el botón de menú hamburguesa y el menú desplegable en pantallas grandes */
+.menu-toggle, .nav-narrow {
+  display: none;
+}
+
+/*Al botón login en pantallas anchas como PC el color del texto siempre tiene que ser blanco y como es un NavLink que cuenta como 'a' se le quita el subrayado*/
+.container-right .buttonLogin a{
+  background: none; /* Remueve el fondo del botón */
+  color: white; /* Color del texto */
+  text-decoration: none; /* Elimina el subrayado de los enlaces */
+}
+
+.buttonLogin{
+  padding: 7px;
+  border-radius: 30px;
+  transition: background-color ease 0.3s;
+}
+
+.buttonLogin:hover{
+ background-color: #2b2c72;
+  
+}
+
+/* Estilo del texto del tooltip */
+.tooltip-text {
+  visibility: hidden; /* Oculta el tooltip por defecto */
+  width: 170px; /* Ajusta el ancho del tooltip */
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro con transparencia */
+  color: #fff; /* Texto blanco */
+  text-align: center; /* Centra el texto dentro del tooltip */
+  border-radius: 5px; /* Bordes redondeados */
+  padding: 5px 10px; /* Espaciado interno */
+  position: absolute; /* Posición absoluta relativa al contenedor */
+  top: 125%; /* Coloca el tooltip debajo del ícono */
+  left: 50%; /* Centra horizontalmente el tooltip */
+  transform: translateX(-50%); /* Ajusta el tooltip para que quede centrado */
+  z-index: 1000; /* Asegura que el tooltip esté sobre otros elementos */
+  opacity: 0; /* Inicialmente transparente */
+  transition: opacity 0.3s ease; /* Transición suave al aparecer */
+}
+
+/* Flecha del tooltip */
+.tooltip-text::after {
+  content: '';
+  position: absolute;
+  bottom: 100%; /* Coloca la flecha encima del tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgba(0, 0, 0, 0.8) transparent; /* Crea una flecha triangular */
+}
+
+.tooltip-container {
+  position: relative; /* Necesario para que el tooltip-text se posicione relativo al contenedor */
+  display: inline-block; /* Asegura que se comporte como un elemento contenedor para el tooltip */
+}
+
+
+/* Muestra el tooltip al pasar el mouse */
+.tooltip-container:hover .tooltip-text {
+  visibility: visible; /* Hace visible el tooltip */
+  opacity: 1; /* Cambia a opaco */
+}
+
+.menu-toggle.active{
+  color: white;
+}
+
+.menu-toggle.close{
+  color: black;
+}
+
+/* Media query para dispositivos con un ancho de pantalla menor o igual a 768px */
+@media (max-width: 768px) {
+  /* Reduce el tamaño de los enlaces y oculta los enlaces de navegación en pantallas pequeñas */
+  .enlaces, .container-right {
+    display: none; /* Oculta los enlaces en pantallas pequeñas (como en móviles) */
+  }
+
+  /* Estilos para el botón de menú hamburguesa en pantallas pequeñas de manera general este abierto/activado o cerrado/close */
+  .menu-toggle {
+    display: flex; /* Muestra el botón de menú hamburguesa en pantallas pequeñas */
+    align-items: center; /* Alinea el ícono dentro del botón verticalmente */
+    justify-content: center; /* Alinea el ícono horizontalmente */
+    font-size: 200%; /* Agranda el tamaño del ícono (≡ o x) */
+    line-height: 20px; /* Define el espacio vertical entre líneas para centrar el ícono */
+    background-color: transparent; /* Hace el fondo del botón transparente */
+    color: rgb(0, 0, 0); /* El ícono dentro del botón será de color negro */
+    border: 2px solid rgb(255, 255, 255); /* Añade un borde negro al botón para que sea visible */
+    border-radius: 5px; /* Hace que las esquinas del botón sean redondeadas */
+    padding: 10px; /* Añade espacio interno dentro del botón */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el botón */
+    z-index: 11; /* Asegura que el botón hamburguesa esté por encima del menú desplegable */
+    height: auto;
+    width: auto;
+  }
+
+  .menu-toggle.active{
+    position: fixed; /*No importa cuanto se haga scrolle down, la X siempre estará en esa
+    posición de top 20px y right 20px porque esta acvtivo el menu hamburgesa está activo*/
+    top: 20px; /* Mantiene el botón a 20px de la parte superior */
+    right: 20px; /* Mantiene el botón a 20px del borde derecho */
+  }
+
+  .menu-toggle.close { /*SI el menú esta en modo claro y cerrado*/
+    color: black; /* Si el menú está cerrado, las tres rayas serán de color negro */
+  }
+  
+  .menu-toggle.close.dark{ /*Las tres rayas cuando está en modo obscuro y cerrado el menú será blanco sin bordees*/
+    color: white;
+    border: 0px;
+  }
+  
+
+  /* Estilos para el menú desplegable cuando se abre en pantallas pequeñas */
+  .nav-narrow {
+    display: none; /* Oculta el menú desplegable por defecto */
+    position: fixed; /* Fija el menú a la pantalla, para que no se desplace con el contenido */
+    top: 0; /* Coloca el menú en la parte superior de la pantalla */
+    left: 0; /* Alinea el menú al borde izquierdo de la pantalla */
+    width: 100vw; /* El menú ocupa el ancho completo de la pantalla */
+    height: 100vh; /* El menú ocupa la altura completa de la pantalla (viewport height) */
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo oscuro con un poco de transparencia */
+    flex-direction: column; /* Coloca los elementos dentro del menú en columna, uno debajo del otro */
+    justify-content: center; /* Centra los enlaces verticalmente dentro del menú */
+    align-items: center; /* Centra los enlaces horizontalmente dentro del menú */
+    z-index: 10; /* Hace que el menú esté encima del contenido principal */
+    overflow: auto;
+    transition: all 0.3s ease-in-out; /* Añade una transición suave al abrir/cerrar el menú */
+  }
+
+  /* Estilos para el menú cuando está abierto (clase 'open') */
+  .nav-narrow.open {
+    display: flex; /* Muestra el menú desplegable cuando se activa la clase 'open' */ 
+    
+  }
+
+  .nav-narrow.open button{
+    height: auto;
+    margin-left: 20%;
+  }
+
+  /*Cuando el menú hamburgesa esta abierto y un enlace de Link está activo*/
+  .nav-narrow.open a.active {
+    transition: border 0.3s ease; /* Agrega una transición suave para el borde */
+    border: 1px solid #ffffff; /* Cambia el color y grosor según tus necesidades */
+    padding: 10%; /* Opcional: espaciado interno para que el borde no esté pegado al texto */
+    border-radius: 50px;
+}
+
+/* Estilo para el botón de Login cuando el menú desplegable está abierto */
+.nav-narrow.open .nav-button a{
+  border: none; /* Remueve el borde para el botón */
+  background: none; /* Remueve el fondo del botón */
+  padding: 0; /* Ajusta el padding si es necesario */
+  color: white; /* Color del texto */
+}
+
+  .nav-narrow img { /*La imagen de sol o luna*/
+    position: relative; /*Le indica al navegador que la posición de la imagen será ajustada relativa a su posición original en el flujo del documento.*/
+     /* Ajusta este valor según la cantidad que quieras mover hacia arriba */
+    top: -10vh;
+    margin-top: 2vh;
+  }
+
+
+  /* Estilo para la lista de enlaces dentro del menú desplegable */
+  .nav-narrow ul {
+    list-style: none; /* Elimina los puntos o números de la lista de enlaces */
+    padding: 0; /* Elimina el espaciado interno de la lista */
+    margin: 0; /* Elimina el margen externo de la lista */
+    display: flex;
+    flex-direction: column; /*Los elementos estan apilados en columna*/
+    gap: 10vh;
+  }
+
+  /* Estilo para los elementos de la lista dentro del menú */
+  .nav-narrow ul li {
+    margin: 1vh 0; /* Añade espacio entre cada enlace del menú desplegable */
+  }
+
+  /* Estilo para los enlaces dentro del menú desplegable */
+  .nav-narrow ul li a {
+    color: rgb(255, 255, 255); /* El texto de los enlaces será blanco */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+  }
+  
+  .tooltip-text{
+    top: 5%;
+  }
+  
+}
+
+
+@media (max-height: 375px) {
+  .nav-narrow img {
+    margin-top: 50vh;
+  }
+
+  .nav-phone-div{
+    margin-top: 30dvh;
+    margin-bottom: 20vh;
+  }
+}

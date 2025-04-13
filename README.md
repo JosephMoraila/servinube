@@ -8,7 +8,7 @@
 
 ## 🎯 Objetivo
 
-El propósito de **Servinube** es ofrecer una nube local que cualquier persona —incluso sin conocimientos de programación— pueda usar de forma fácil y segura en un futuro ya que como se recalcó anteriormente, aún está en fase de desarrollo.  
+El propósito de **Servinube** es ofrecer una nube local que cualquier persona —incluso sin conocimientos de programación— pueda usar de forma fácil y segura en un futuro ya que como se recalcó anteriormente, aún está en fase de desarrollo y contiene algunos errores.  
 Por ahora el enfoque es funcionalidad básica, pero con el tiempo se irá fortaleciendo en seguridad y usabilidad.
 
 Este proyecto fue desarrollado en gran parte con ayuda de inteligencia artificial, ya que se en ratos libres durante mi trabajo de estudiante, donde los clientes no siempre me dejan programar tranquilo 😅.

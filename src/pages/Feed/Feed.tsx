@@ -592,11 +592,13 @@ const Feed = () => {
       )}
 
       {preview && (
-        <ModalPreviewFile 
-          preview={preview}
-          onClose={() => setPreview(null)}
-          onDownload={handleDownload}
-        />
+        <div style={{ pointerEvents: 'auto' }}>
+          <ModalPreviewFile 
+            preview={preview}
+            onClose={() => setPreview(null)}
+            onDownload={handleDownload}
+          />
+        </div>
       )}
     </div>
   );

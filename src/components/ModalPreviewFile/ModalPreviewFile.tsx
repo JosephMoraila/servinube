@@ -17,6 +17,13 @@ interface ModalPreviewFileProps {
 const ModalPreviewFile = ({ preview, onClose, onDownload }: ModalPreviewFileProps) => {
   const { effectiveMode } = useDarkMode();
 
+  const handleModalClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      URL.revokeObjectURL(preview.url);
+      onClose();
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -33,7 +40,7 @@ const ModalPreviewFile = ({ preview, onClose, onDownload }: ModalPreviewFileProp
   }, [onClose, preview.url]);
 
   return (
-    <div className="modal">
+    <div className="modal" onClick={handleModalClick}>
       <div className={`modal-content preview-modal ${effectiveMode === 'dark' ? 'dark' : ''}`}>
         <div className="modal-header">
           <h2>{preview.name}</h2>

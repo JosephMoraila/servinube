@@ -1,50 +1,84 @@
 import { Router, Request, Response } from 'express';
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs-extra'; // Cambiar a fs-extra
 import { asyncHandler } from '../utils/asyncHandler';
 
+/**
+ * Router para manejar la eliminación de carpetas
+ * Las carpetas eliminadas se mueven a una carpeta .trash en lugar de eliminarse permanentemente
+ */
 const router = Router();
 
 router.delete('/deleteFolder', asyncHandler(async (req: Request, res: Response) => {
   try {
     const { name, folder, userId } = req.query;
+    console.log('📝 Iniciando proceso de eliminación de carpeta:', {
+      carpeta: name,
+      ubicación: folder || '',
+      usuario: userId
+    });
+
     if (!userId || !name) {
+      console.log('❌ Error: Faltan parámetros requeridos:', { userId, name });
       return res.status(400).send('Missing required parameters');
     }
 
     const userFolder = path.join(process.cwd(), 'src', 'uploads', userId.toString());
-    console.log(`User folder: ${userFolder}`);
-
     const trashFolder = path.join(userFolder, '.trash');
-    console.log(`Trash folder: ${trashFolder}`);
-    
     const sourcePath = folder 
       ? path.join(userFolder, folder as string, name as string)
       : path.join(userFolder, name as string);
 
-      console.log(`Source path: ${sourcePath}`);
-    
-    // Create trash folder if it doesn't exist
-    if (!fs.existsSync(trashFolder)) {
-      fs.mkdirSync(trashFolder, { recursive: true });
+    // Verificar que la carpeta existe
+    if (!await fs.pathExists(sourcePath)) {
+      console.log('❌ Error: La carpeta no existe:', sourcePath);
+      return res.status(404).send('Folder not found');
     }
 
-    // Generate unique name for trash
+    // Verificar que es una carpeta
+    const stats = await fs.stat(sourcePath);
+    if (!stats.isDirectory()) {
+      console.log('❌ Error: No es una carpeta:', sourcePath);
+      return res.status(400).send('Not a folder');
+    }
+
+    // Crear carpeta de papelera con permisos recursivos
+    if (!await fs.pathExists(trashFolder)) {
+      console.log('📁 Creando directorio de papelera...');
+      await fs.mkdir(trashFolder, { recursive: true, mode: 0o777 });
+      // Asegurar permisos recursivos en la carpeta .trash
+      await fs.chmod(trashFolder, 0o777);
+    }
+
     const timestamp = new Date().getTime();
-    const trashPath = path.join(trashFolder, `${name}`);
+    const trashPath = path.join(trashFolder, `${name}_${timestamp}`);
 
-    console.log(`Trash path: ${trashPath}`);
-
-    // Move folder to trash
-    fs.renameSync(sourcePath, trashPath);
-
-    res.status(200).send('Folder moved to trash');
+    try {
+      // Asegurar permisos en la carpeta fuente antes de moverla
+      await fs.chmod(sourcePath, 0o777);
+      
+      // Usar move de fs-extra en lugar de renameSync
+      await fs.move(sourcePath, trashPath, { overwrite: true });
+      console.log('✅ Carpeta movida exitosamente a la papelera');
+      
+      res.status(200).send('Folder moved to trash');
+    } catch (moveError) {
+      console.error('❌ Error específico al mover:', moveError);
+      // Intento alternativo usando copy+remove
+      try {
+        await fs.copy(sourcePath, trashPath);
+        await fs.remove(sourcePath);
+        console.log('✅ Carpeta copiada y eliminada exitosamente');
+        res.status(200).send('Folder moved to trash');
+      } catch (fallbackError) {
+        console.error('❌ Error en el método alternativo:', fallbackError);
+        throw fallbackError;
+      }
+    }
   } catch (error) {
-    console.error('Error deleting folder:', error);
+    console.error('❌ Error al mover carpeta a papelera:', error);
     res.status(500).send('Error deleting folder');
   }
-})
-);
-
+}));
 
 export default router;

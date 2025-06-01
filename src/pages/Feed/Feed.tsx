@@ -408,9 +408,9 @@ const Feed = () => {
     try {
       await axios.delete(`${API_BASE_URL}${isDirectory ? '/api/deleteFolder' : '/api/deleteFile'}`, {
         params: { 
-          fileName,
-          folder: currentFolder,
-          userId 
+          name: fileName,          // Cambiado de fileName a name
+          folder: currentFolder,   // Se mantiene
+          userId                  // Se mantiene
         },
         withCredentials: true
       });

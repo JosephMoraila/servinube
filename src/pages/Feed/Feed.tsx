@@ -520,7 +520,7 @@ const Feed = () => {
           )}
           <div className="menu-item delete" onClick={() => handleDelete(contextMenu.file, contextMenu.isDirectory)}>
             <span className="icon">🗑️</span>
-            ELIMINAR
+            {contextMenu.isDirectory ? 'ELIMINAR CARPETA' : 'ELIMINAR ARCHIVO'}
           </div>
         </div>
       )}

@@ -6,6 +6,7 @@ import { useDarkMode } from '../../contexts/DarkModeContext'
 import API_BASE_URL from "../../constants/PAGE_URL";
 import { useMessageBoxContext } from "../../contexts/MessageBoxContext";
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
+import DialogInput from '../../components/CuadroDialogoInput/CuadroDialogoInput';
 
 /**
  * Interface representing a file upload progress
@@ -54,6 +55,11 @@ const Feed = () => {
     type: string;
     name: string;
   } | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{
+    isOpen: boolean;
+    fileName: string;
+    isDirectory: boolean;
+  }>({ isOpen: false, fileName: '', isDirectory: false });
 
   // DOM References
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -403,14 +409,20 @@ const Feed = () => {
   };
 
   const handleDelete = async (fileName: string, isDirectory: boolean) => {
-    if (!confirm(`¿Estás seguro de que deseas mover "${fileName}" ${isDirectory ? 'y todo su contenido' : ''} a la papelera?`)) return;
-  
+    setDeleteDialog({ isOpen: true, fileName, isDirectory });
+  };
+
+  const handleConfirmDelete = async (inputValue: string) => {
+    if (inputValue !== 'ELIMINAR') return;
+    
+    const { fileName, isDirectory } = deleteDialog;
     try {
       await axios.delete(`${API_BASE_URL}${isDirectory ? '/api/deleteFolder' : '/api/deleteFile'}`, {
         params: { 
-          name: fileName,          // Cambiado de fileName a name
-          folder: currentFolder,   // Se mantiene
-          userId                  // Se mantiene
+          fileName,
+          name: fileName,
+          folder: currentFolder,
+          userId               
         },
         withCredentials: true
       });
@@ -600,6 +612,20 @@ const Feed = () => {
           />
         </div>
       )}
+
+      <DialogInput
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog(prev => ({ ...prev, isOpen: false }))}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar eliminación"
+        description={`¿Estás seguro de que deseas mover "${deleteDialog.fileName}" ${
+          deleteDialog.isDirectory ? 'y todo su contenido' : ''
+        } a la papelera? Escribe ELIMINAR para confirmar.`}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        placeholder="Escribe ELIMINAR para confirmar"
+        typeInput="text"
+      />
     </div>
   );
 };

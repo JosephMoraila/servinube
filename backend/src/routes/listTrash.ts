@@ -6,30 +6,42 @@ import { asyncHandler } from '../utils/asyncHandler';
 
 const router = Router();
 
+/**
+ * Route handler for listing files in user's trash directory
+ * GET /listTrash
+ * 
+ * @param {Request} req - Express request object with userId in query
+ * @param {Response} res - Express response object
+ * @returns {Promise<void>} - Returns list of files in trash or empty array
+ */
 router.get('/listTrash', asyncHandler(async (req: Request, res: Response) => {
     const { userId } = req.query;
 
     try {
         if (!userId) {
+            console.log('❌ Error: Falta ID de usuario');
             return res.status(400).json({ error: 'Falta el ID de usuario' });
         }
 
+        console.log('📝 Iniciando listado de papelera para usuario:', userId);
         const trashDir = path.join(UPLOAD_DIRECTORY, userId.toString(), '.trash');
+        console.log('📂 Directorio de papelera:', trashDir);
         
         try {
             const files = await fs.readdir(trashDir);
-            console.log('Archivos en la papelera:', files);
+            console.log('✅ Archivos encontrados en papelera:', files.length);
+            console.log('📄 Lista de archivos:', files);
             res.json({ files });
         } catch (error) {
-            // Si el directorio no existe, devolver una lista vacía
             if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+                console.log('ℹ️ Papelera vacía o no existe para usuario:', userId);
                 res.json({ files: [] });
             } else {
                 throw error;
             }
         }
     } catch (error) {
-        console.error('Error al listar archivos de la papelera:', error);
+        console.error('❌ Error al listar papelera:', error);
         res.status(500).json({ error: 'Error al listar archivos de la papelera' });
     }
 }));

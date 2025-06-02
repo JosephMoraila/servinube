@@ -30,12 +30,32 @@ const Trash = () => {
       });
       
       const trashFiles = response.data.files.map((fileName: string) => {
-        const [timestamp, originalPathAndName] = fileName.toString().split('_');
-        const [originalPath, name] = originalPathAndName.split('__');
+        // Dividimos el nombre del archivo por guiones bajos
+        console.log('📁 Procesando archivo:', fileName);
+        const parts = fileName.toString().split('_');
+        console.log('📑 Partes separadas:', parts);
+
+        // El primer elemento siempre es el timestamp
+        const timestamp = parts[0];
+        console.log('⏰ Timestamp:', timestamp);
+
+        // El último elemento es el nombre original del archivo
+        const name = parts[parts.length - 1];
+        console.log('📄 Nombre del archivo:', name);
+
+        // Todo lo que está entre el timestamp y el nombre es la ruta original
+        // Si no hay ruta intermedia, se usa 'raíz'
+        const originalPath = parts.slice(1, -1).join('/') || 'raíz';
+        console.log('📂 Ruta original:', originalPath);
+
+        // Ejemplo: "1748837197398_Foldercito_FREE_archivo.png"
+        // timestamp: "1748837197398"
+        // name: "archivo.png"
+        // originalPath: "Foldercito/FREE"
         return {
-          name: fileName,
+          name: name,
           displayName: name,
-          originalPath: originalPath || 'raíz',
+          originalPath: originalPath,
           timestamp: new Date(parseInt(timestamp)).toLocaleString()
         };
       });

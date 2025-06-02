@@ -141,6 +141,12 @@ const Feed = () => {
       return;
     }
 
+    if (folderName.includes("/") || folderName.includes("\\")) {
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("El nombre de la carpeta no puede contener / o \\");
+      return;
+    }
+
     if (folderName === ".trash") {
       setColorMessageBox('#ff0000');
       setMessageMessageBox ("No se puede crear una carpeta con ese nombre.");

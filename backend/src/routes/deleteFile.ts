@@ -23,8 +23,10 @@ router.delete('/deleteFile', asyncHandler(async (req: Request, res: Response) =>
       // Crear directorio de papelera si no existe
       const trashDir = path.join(UPLOAD_DIRECTORY, userId.toString(), '.trash');
       await fs.mkdir(trashDir, { recursive: true });
-      console.log('📁 Directorio de papelera verificado:', trashDir);
 
+      // Sanitizar el nombre del archivo reemplazando /, \, y _ con -
+      const sanitizedFileName = fileName.toString().replace(/[/\\_]/g, '-');
+      
       // Construir la ruta completa del archivo a eliminar
       // Si hay una carpeta especificada, el archivo está dentro de esa carpeta
       // Si no hay carpeta, el archivo está en la raíz del directorio del usuario
@@ -39,9 +41,9 @@ router.delete('/deleteFile', asyncHandler(async (req: Request, res: Response) =>
       // 1. Evitar conflictos de nombres en la papelera
       // 2. Mantener la información de la ubicación original del archivo
       // 3. Facilitar la restauración posterior
-      const originalPath = folder ? folder.toString() : '';
+      const originalPath = folder ? folder.toString().replace(/[/\\]/g, '_') : '';
       console.log('🔍 Carpeta original del archivo:', originalPath);
-      const trashFileName = `${Date.now()}_${originalPath}__${fileName.toString()}`;
+      const trashFileName = `${Date.now()}_${originalPath}_${sanitizedFileName}`;
       const trashPath = path.join(trashDir, trashFileName);
       console.log('🗑️ Nueva ruta en papelera:', trashPath);
 

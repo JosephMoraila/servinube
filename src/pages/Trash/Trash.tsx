@@ -29,24 +29,19 @@ const Trash = () => {
         withCredentials: true
       });
       
-      const trashFiles = response.data.files.map((fileName: string) => {
+      const trashFiles: TrashFile[] = response.data.files.map((fileName: string) => {
         // Dividimos el nombre del archivo por guiones bajos
-        console.log('📁 Procesando archivo:', fileName);
         const parts = fileName.toString().split('_');
-        console.log('📑 Partes separadas:', parts);
 
         // El primer elemento siempre es el timestamp
         const timestamp = parts[0];
-        console.log('⏰ Timestamp:', timestamp);
 
         // El último elemento es el nombre original del archivo
         const name = parts[parts.length - 1];
-        console.log('📄 Nombre del archivo:', name);
 
         // Todo lo que está entre el timestamp y el nombre es la ruta original
         // Si no hay ruta intermedia, se usa 'raíz'
         const originalPath = parts.slice(1, -1).join('/') || 'raíz';
-        console.log('📂 Ruta original:', originalPath);
 
         // Ejemplo: "1748837197398_Foldercito_FREE_archivo.png"
         // timestamp: "1748837197398"
@@ -54,7 +49,7 @@ const Trash = () => {
         // originalPath: "Foldercito/FREE"
         return {
           name: name,
-          displayName: name,
+          displayName: fileName,
           originalPath: originalPath,
           timestamp: new Date(parseInt(timestamp)).toLocaleString()
         };
@@ -143,7 +138,7 @@ const Trash = () => {
     }
   };
 
-  const handlePreview = async (fileName: string) => {
+  const handlePreview = async (fileName: string, displayName:string) => {
     try {
       console.log("🔍 Attempting preview for:", { fileName, userId });
       
@@ -161,8 +156,8 @@ const Trash = () => {
         const blob = new Blob([response.data], { type: response.headers['content-type'] });
         const url = URL.createObjectURL(blob);
         const type = response.headers['content-type'];
-        setPreview({ url, type, name: fileName });
-        console.log("✅ Preview successful:", { type });
+        setPreview({ url, type, name: displayName });
+  
       } else {
         throw new Error(`Server responded with status: ${response.status}`);
       }
@@ -177,7 +172,7 @@ const Trash = () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/api/download`, {
         params: { 
-          fileName,
+          files,
           folder: '.trash',
           userId 
         },
@@ -189,6 +184,7 @@ const Trash = () => {
       const link = document.createElement('a');
       link.href = url;
       link.download = fileName.split('__').pop() || fileName; // Extract original filename
+      console.log("📥 Downloading file:", link.download);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -201,7 +197,8 @@ const Trash = () => {
   };
 
   const handleFileClick = (file: TrashFile) => {
-    handlePreview(file.name);
+    console.log("📂 File clicked:", file);
+    handlePreview(file.displayName, file.name);
   };
 
   useEffect(() => {

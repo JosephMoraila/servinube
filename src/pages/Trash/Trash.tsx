@@ -8,10 +8,10 @@ import API_BASE_URL from '../../constants/PAGE_URL';
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
 
 interface TrashFile {
-  name: string;
-  displayName: string;
-  originalPath: string;
-  timestamp: string;
+  pathName: string;      // nombre completo con timestamp y ruta (antes era displayName)
+  displayName: string;   // nombre original del archivo (antes era name)
+  originalPath: string;  // se mantiene igual
+  timestamp: string;     // se mantiene igual
 }
 
 const Trash = () => {
@@ -30,26 +30,14 @@ const Trash = () => {
       });
       
       const trashFiles: TrashFile[] = response.data.files.map((fileName: string) => {
-        // Dividimos el nombre del archivo por guiones bajos
         const parts = fileName.toString().split('_');
-
-        // El primer elemento siempre es el timestamp
         const timestamp = parts[0];
-
-        // El último elemento es el nombre original del archivo
-        const name = parts[parts.length - 1];
-
-        // Todo lo que está entre el timestamp y el nombre es la ruta original
-        // Si no hay ruta intermedia, se usa 'raíz'
+        const displayName = parts[parts.length - 1];
         const originalPath = parts.slice(1, -1).join('/') || 'raíz';
 
-        // Ejemplo: "1748837197398_Foldercito_FREE_archivo.png"
-        // timestamp: "1748837197398"
-        // name: "archivo.png"
-        // originalPath: "Foldercito/FREE"
         return {
-          name: name,
-          displayName: fileName,
+          pathName: fileName,
+          displayName: displayName,
           originalPath: originalPath,
           timestamp: new Date(parseInt(timestamp)).toLocaleString()
         };
@@ -82,7 +70,7 @@ const Trash = () => {
     try {
       const response = await axios.post(`${API_BASE_URL}/api/restoreFile`, null, {
         params: { 
-          fileName: file.name,
+          fileName: file.pathName,
           userId 
         },
         withCredentials: true
@@ -113,7 +101,7 @@ const Trash = () => {
     try {
       await axios.delete(`${API_BASE_URL}/api/permanentDelete`, {
         params: { 
-          fileName: file.name,
+          fileName: file.pathName,
           userId 
         },
         withCredentials: true
@@ -138,13 +126,13 @@ const Trash = () => {
     }
   };
 
-  const handlePreview = async (fileName: string, displayName:string) => {
+  const handlePreview = async (pathName: string, displayName: string) => {
     try {
-      console.log("🔍 Attempting preview for:", { fileName, userId });
+      console.log("🔍 Attempting preview for:", { pathName, userId });
       
       const response = await axios.get(`${API_BASE_URL}/api/preview`, {
         params: { 
-          fileName,
+          fileName: pathName,
           folder: `.trash`,
           userId 
         },
@@ -198,7 +186,7 @@ const Trash = () => {
 
   const handleFileClick = (file: TrashFile) => {
     console.log("📂 File clicked:", file);
-    handlePreview(file.displayName, file.name);
+    handlePreview(file.pathName, file.displayName);
   };
 
   useEffect(() => {
@@ -217,7 +205,7 @@ const Trash = () => {
           <div className="files-grid">
             {files.map((file) => (
               <div
-                key={file.name}
+                key={file.pathName}
                 className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
                 onClick={() => handleFileClick(file)}
                 onContextMenu={(e) => handleContextMenu(e, file)}
@@ -225,7 +213,7 @@ const Trash = () => {
                 <div className="file-icon">🗑️</div>
                 <div className="file-info">
                   <div className="file-details">
-                    <span className="file-name-display">{file.name}</span>
+                    <span className="file-name-display">{file.displayName}</span>
                     <span>Ubicación original: {file.originalPath}</span>
                     <span>Eliminado: {file.timestamp}</span>
                   </div>

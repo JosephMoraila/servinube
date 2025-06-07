@@ -6,6 +6,7 @@ import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useMessageBoxContext } from '../../contexts/MessageBoxContext';
 import API_BASE_URL from '../../constants/PAGE_URL';
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog';
 
 interface TrashFile {
   pathName: string;      // nombre completo con timestamp y ruta (antes era displayName)
@@ -18,6 +19,10 @@ const Trash = () => {
   const [files, setFiles] = useState<TrashFile[]>([]);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; file: TrashFile } | null>(null);
   const [preview, setPreview] = useState<{ url: string; type: string; name: string; } | null>(null);
+  const [confirmDialog, setConfirmDialog] = useState<{ isOpen: boolean; file: TrashFile | null }>({ 
+    isOpen: false, 
+    file: null 
+  });
   const { userId } = useAuth();
   const { effectiveMode } = useDarkMode();
   const { setMessageMessageBox, setColorMessageBox } = useMessageBoxContext();
@@ -100,7 +105,12 @@ const Trash = () => {
   };
 
   const handleDelete = async (file: TrashFile) => {
-    if (!confirm(`¿Estás seguro de que deseas eliminar permanentemente "${file.displayName}"?`)) return;
+    setConfirmDialog({ isOpen: true, file });
+  };
+
+  const handleConfirmDelete = async () => {
+    const file = confirmDialog.file;
+    if (!file) return;
     
     try {
       await axios.delete(`${API_BASE_URL}/api/permanentDelete`, {
@@ -335,6 +345,16 @@ const Trash = () => {
           onDownload={handleDownload}
         />
       )}
+
+      <ConfirmDialog
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ isOpen: false, file: null })}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar eliminación"
+        description={`¿Estás seguro de que deseas eliminar permanentemente "${confirmDialog.file?.displayName}"?`}
+        confirmText="Sí"
+        cancelText="No"
+      />
     </div>
   );
 };

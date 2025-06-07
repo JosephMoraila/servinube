@@ -460,6 +460,87 @@ const Feed = () => {
     }
   };
 
+  const getFileIcon = (name: string, isDirectory: boolean) => {
+    // Si es un directorio, retornar icono de carpeta
+    if (isDirectory) {
+      return '📁';
+    }
+
+    // Obtener la extensión del archivo
+    const extension = name.split('.').pop()?.toLowerCase() || '';
+
+    // Retornar el icono según el tipo de archivo
+    switch (extension) {
+      // Imágenes
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'bmp':
+      case 'webp':
+        return '🖼️';
+
+      // Videos
+      case 'mp4':
+      case 'mov':
+      case 'avi':
+      case 'mkv':
+      case 'wmv':
+        return '🎥';
+
+      // Documentos
+      case 'pdf':
+        return '📄';
+      case 'doc':
+      case 'docx':
+        return '📝';
+      case 'xls':
+      case 'xlsx':
+        return '📊';
+      case 'ppt':
+      case 'pptx':
+        return '📽️';
+
+      // Archivos de texto
+      case 'txt':
+      case 'md':
+        return '📃';
+
+      // Archivos comprimidos
+      case 'zip':
+      case 'rar':
+      case '7z':
+      case 'tar':
+      case 'gz':
+        return '🗜️';
+
+      // Archivos de código
+      case 'js':
+      case 'jsx':
+      case 'ts':
+      case 'tsx':
+      case 'html':
+      case 'css':
+      case 'py':
+      case 'java':
+      case 'cpp':
+      case 'c':
+        return '👨‍💻';
+
+      // Archivos de audio
+      case 'mp3':
+      case 'wav':
+      case 'ogg':
+      case 'm4a':
+      case 'flac':
+        return '🎵';
+
+      // Por defecto
+      default:
+        return '📄';
+    }
+  };
+
   return (
     <div 
       className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} 
@@ -516,7 +597,7 @@ const Feed = () => {
               onContextMenu={(e) => handleContextMenu(e, file.name, file.isDirectory)}
             >
               <div className="file-icon">
-                {file.isDirectory ? "📁" : "📄"}
+                {getFileIcon(file.name, file.isDirectory)}
               </div>
               <div className="file-name">{file.name}</div>
             </div>

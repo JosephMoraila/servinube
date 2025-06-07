@@ -88,10 +88,14 @@ const Trash = () => {
         notification.remove();
       }, 3000);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al restaurar archivo:', error);
       setColorMessageBox("#ff0000");
-      setMessageMessageBox('Error al restaurar el archivo');
+      // Mostrar el mensaje específico del servidor si existe
+      setMessageMessageBox(
+        error.response?.data?.error || 
+        'Error al restaurar el archivo'
+      );
     }
   };
 
@@ -152,7 +156,7 @@ const Trash = () => {
     } catch (error: any) {
       console.error("❌ Preview error:", error.message);
       setColorMessageBox("#ff0000");
-      setMessageMessageBox("No se pudo previsualizar el archivo. Por favor, intente descargarlo.");
+      setMessageMessageBox("No se pudo previsualizar el archivo. Por favor, intente restaurarlo.");
     }
   };
 
@@ -189,6 +193,87 @@ const Trash = () => {
     handlePreview(file.pathName, file.displayName);
   };
 
+  const getFileIcon = (displayName: string) => {
+    // Si el nombre no tiene punto o termina en punto, es una carpeta
+    if (!displayName.includes('.') || displayName.endsWith('.')) {
+      return '📁';
+    }
+
+    // Obtener la extensión del archivo
+    const extension = displayName.split('.').pop()?.toLowerCase() || '';
+
+    // Retornar el icono según el tipo de archivo
+    switch (extension) {
+      // Imágenes
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'bmp':
+      case 'webp':
+        return '🖼️';
+
+      // Videos
+      case 'mp4':
+      case 'mov':
+      case 'avi':
+      case 'mkv':
+      case 'wmv':
+        return '🎥';
+
+      // Documentos
+      case 'pdf':
+        return '📄';
+      case 'doc':
+      case 'docx':
+        return '📝';
+      case 'xls':
+      case 'xlsx':
+        return '📊';
+      case 'ppt':
+      case 'pptx':
+        return '📽️';
+
+      // Archivos de texto
+      case 'txt':
+      case 'md':
+        return '📃';
+
+      // Archivos comprimidos
+      case 'zip':
+      case 'rar':
+      case '7z':
+      case 'tar':
+      case 'gz':
+        return '🗜️';
+
+      // Archivos de código
+      case 'js':
+      case 'jsx':
+      case 'ts':
+      case 'tsx':
+      case 'html':
+      case 'css':
+      case 'py':
+      case 'java':
+      case 'cpp':
+      case 'c':
+        return '👨‍💻';
+
+      // Archivos de audio
+      case 'mp3':
+      case 'wav':
+      case 'ogg':
+      case 'm4a':
+      case 'flac':
+        return '🎵';
+
+      // Por defecto
+      default:
+        return '📄';
+    }
+  };
+
   useEffect(() => {
     const handleGlobalClick = () => setContextMenu(null);
     window.addEventListener('click', handleGlobalClick);
@@ -210,7 +295,7 @@ const Trash = () => {
                 onClick={() => handleFileClick(file)}
                 onContextMenu={(e) => handleContextMenu(e, file)}
               >
-                <div className="file-icon">🗑️</div>
+                <div className="file-icon">{getFileIcon(file.displayName)}</div>
                 <div className="file-info">
                   <div className="file-details">
                     <span className="file-name-display">{file.displayName}</span>

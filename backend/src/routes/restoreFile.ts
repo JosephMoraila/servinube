@@ -67,7 +67,7 @@ router.post('/restoreFile', asyncHandler(async (req: Request, res: Response) => 
         try {
             await fs.access(destinationPath);
             console.log('⚠️ Ya existe un archivo en la ruta de destino');
-            return res.status(409).json({ error: 'Ya existe un archivo con ese nombre en la ruta de destino' });
+            return res.status(409).json({ error: 'Ya existe un archivo/carpeta con ese nombre en la ruta donde fue eliminado.\nPrueba cambiar de nombre al archivo tu unidad.' });
         } catch {
             // Si no existe, podemos continuar
             console.log('✅ La ruta de destino está libre');

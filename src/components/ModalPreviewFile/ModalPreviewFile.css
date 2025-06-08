@@ -234,6 +234,16 @@
   margin: 20px 0;
 }
 
+.preview-content iframe {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay.dark .preview-content iframe {
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
 .unsupported-format {
   padding: 20px;
   text-align: center;

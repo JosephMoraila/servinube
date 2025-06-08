@@ -31,11 +31,31 @@ const ModalPreviewFile: FC<ModalPreviewFileProps> = ({
     if (preview.type.startsWith('audio/')) {
       return <audio src={preview.url} controls />;
     }
+    if (preview.type === 'application/pdf') {
+      return (
+        <iframe
+          src={preview.url + '#toolbar=1'}
+          title={preview.name}
+          width="100%"
+          height="100%"
+          style={{ border: 'none', minHeight: '500px' }}
+        />
+      );
+    }
     return <div className="unsupported-format">Formato no soportado para previsualización</div>;
   };
 
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={`modal-overlay ${effectiveMode === 'dark' ? 'dark' : ''}`}>
+    <div 
+      className={`modal-overlay ${effectiveMode === 'dark' ? 'dark' : ''}`}
+      onClick={handleOverlayClick}
+    >
       <div className="modal-preview">
         <div className="modal-header">
           <h3>{preview.name}</h3>

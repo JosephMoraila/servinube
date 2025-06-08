@@ -284,7 +284,12 @@ const Feed = () => {
     if (preview) return;
     e.preventDefault();
     e.stopPropagation();
-    setIsDragging(true);
+    
+    // No mostrar el overlay si el arrastre es interno
+    const isInternalDrag = e.dataTransfer.types.includes('text/html');
+    if (!isInternalDrag) {
+      setIsDragging(true);
+    }
   };
 
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
@@ -299,6 +304,10 @@ const Feed = () => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+
+    // Verificar si el arrastre viene de la misma página
+    const isInternalDrag = e.dataTransfer.types.includes('text/html');
+    if (isInternalDrag) return;
 
     const droppedFiles = Array.from(e.dataTransfer.files);
     if (droppedFiles.length === 0) return;
@@ -341,16 +350,8 @@ const Feed = () => {
   return (
     <div 
       className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} 
-      onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(true);
-      }}
-      onDragLeave={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setIsDragging(false);
-      }}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       style={{ pointerEvents: preview ? 'none' : 'auto' }}
     >

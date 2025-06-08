@@ -1,14 +1,6 @@
 import { FC } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-
-interface ContextMenuProps {
-  x: number;
-  y: number;
-  file: string;
-  isDirectory: boolean;
-  onDownload: (file: string) => void;
-  onDelete: (file: string, isDirectory: boolean) => void;
-}
+import { ContextMenuProps } from '../../interfaces/component.interfaces';
 
 export const ContextMenu: FC<ContextMenuProps> = ({
   x,

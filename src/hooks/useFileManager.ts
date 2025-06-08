@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import API_BASE_URL from '../constants/PAGE_URL';
-
-interface FileProgress {
-  name: string;
-  progress: number;
-}
+import { FileProgress } from '../interfaces/file.interfaces';
 
 export const useFileManager = (userId: string | null, currentFolder: string, fetchFiles: () => Promise<void>) => {
   const [uploading, setUploading] = useState(false);

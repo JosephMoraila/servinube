@@ -1,11 +1,5 @@
 import { useState } from 'react';
-
-interface ContextMenuState {
-  x: number;
-  y: number;
-  file: string;
-  isDirectory: boolean;
-}
+import { ContextMenuState } from '../interfaces/component.interfaces';
 
 export const useContextMenu = () => {
   const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);

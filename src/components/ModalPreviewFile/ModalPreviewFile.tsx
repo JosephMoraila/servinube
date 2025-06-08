@@ -1,86 +1,53 @@
+import { FC, useEffect } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-import { useEffect } from 'react';
+import { ModalPreviewFileProps } from '../../interfaces/component.interfaces';
 import './ModalPreviewFile.css';
 
-interface PreviewData {
-  url: string;
-  type: string;
-  name: string;
-}
-
-interface ModalPreviewFileProps {
-  preview: PreviewData;
-  onClose: () => void;
-  onDownload: (fileName: string) => void;
-}
-
-const ModalPreviewFile = ({ preview, onClose, onDownload }: ModalPreviewFileProps) => {
+const ModalPreviewFile: FC<ModalPreviewFileProps> = ({
+  preview,
+  onClose,
+  onDownload
+}) => {
   const { effectiveMode } = useDarkMode();
 
-  const handleModalClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      URL.revokeObjectURL(preview.url);
-      onClose();
-    }
-  };
-
   useEffect(() => {
-    const handleEsc = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        URL.revokeObjectURL(preview.url);
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handleEsc);
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
 
-    return () => {
-      window.removeEventListener('keydown', handleEsc);
-    };
-  }, [onClose, preview.url]);
+  const renderPreview = () => {
+    if (preview.type.startsWith('image/')) {
+      return <img src={preview.url} alt={preview.name} />;
+    }
+    if (preview.type.startsWith('video/')) {
+      return <video src={preview.url} controls />;
+    }
+    if (preview.type.startsWith('audio/')) {
+      return <audio src={preview.url} controls />;
+    }
+    return <div className="unsupported-format">Formato no soportado para previsualización</div>;
+  };
 
   return (
-    <div className="modal" onClick={handleModalClick}>
-      <div className={`modal-content preview-modal ${effectiveMode === 'dark' ? 'dark' : ''}`}>
+    <div className={`modal-overlay ${effectiveMode === 'dark' ? 'dark' : ''}`}>
+      <div className="modal-preview">
         <div className="modal-header">
-          <h2>{preview.name}</h2>
-          <button onClick={() => {
-            URL.revokeObjectURL(preview.url);
-            onClose();
-          }}>✖️</button>
+          <h3>{preview.name}</h3>
+          <div className="modal-actions">
+            <button onClick={() => onDownload(preview.name)} className="download-button">
+              ⬇️ Descargar
+            </button>
+            <button onClick={onClose} className="close-button">✖️</button>
+          </div>
         </div>
-        <div className="modal-body preview-content">
-          {preview.type.startsWith('image/') && (
-            <img src={preview.url} alt={preview.name} />
-          )}
-          {preview.type.startsWith('video/') && (
-            <video controls>
-              <source src={preview.url} type={preview.type} />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          )}
-          {preview.type.startsWith('audio/') && (
-            <audio controls>
-              <source src={preview.url} type={preview.type} />
-              Tu navegador no soporta el elemento de audio.
-            </audio>
-          )}
-          {preview.type === 'application/pdf' && (
-            <iframe
-              src={preview.url}
-              title={preview.name}
-              width="100%"
-              height="100%"
-            />
-          )}
-          {!preview.type.match(/^(image|video|audio|application\/pdf)/) && (
-            <div className="no-preview">
-              <p>No hay vista previa disponible para este tipo de archivo</p>
-              <button onClick={() => onDownload(preview.name)}>
-                Descargar archivo
-              </button>
-            </div>
-          )}
+        <div className="preview-content">
+          {renderPreview()}
         </div>
       </div>
     </div>

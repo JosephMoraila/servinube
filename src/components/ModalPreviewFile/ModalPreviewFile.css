@@ -55,7 +55,7 @@
 .modal-header button {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 1rem;
   cursor: pointer;
 }
 
@@ -89,4 +89,161 @@
 .preview-content .no-preview {
   text-align: center;
   padding: 20px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.dark {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.modal-preview {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay.dark .modal-preview {
+  background-color: #1e1e1e;
+  color: white;
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-overlay.dark .modal-header {
+  border-bottom-color: #333;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  color: #333;
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modal-overlay.dark .modal-header h3 {
+  color: white;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.download-button {
+  font-size: 0.6rem;
+  background-color: #4a90e2;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.modal-overlay.dark .download-button {
+  color: white;
+}
+
+@media screen and (max-width: 768px) {
+  .download-button {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .download-button {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+  }
+}
+
+.download-button:hover {
+  background-color: #357abd;
+  transform: translateY(-1px);
+}
+
+.close-button {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.close-button:hover {
+  background-color: #c0392b;
+  transform: translateY(-1px);
+}
+
+.preview-content {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  min-height: 200px;
+  max-height: calc(90vh - 100px);
+}
+
+.preview-content img,
+.preview-content video {
+  max-width: 100%;
+  max-height: calc(90vh - 100px);
+  object-fit: contain;
+}
+
+.preview-content audio {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.unsupported-format {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.modal-overlay.dark .unsupported-format {
+  color: #ccc;
+  background-color: #2d2d2d;
 }

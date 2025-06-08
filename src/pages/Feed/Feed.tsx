@@ -12,35 +12,7 @@ import { ContextMenu } from '../../components/ContextMenu/ContextMenu';
 import { useFileManager } from '../../hooks/useFileManager';
 import { useContextMenu } from '../../hooks/useContextMenu';
 import { getFileIcon } from '../../utils/fileIcons';
-
-/**
- * Interface representing a file upload progress
- * @interface
- * @property {string} name - The name of the file being uploaded
- * @property {number} progress - The upload progress percentage (0-100)
- */
-interface FileProgress {
-  name: string;
-  progress: number;
-}
-
-interface FileItem {
-  name: string;
-  isDirectory: boolean;
-  mimeType?: string | null;
-}
-
-interface PreviewState {
-  url: string;
-  type: string;
-  name: string;
-}
-
-interface DeleteDialogState {
-  isOpen: boolean;
-  fileName: string;
-  isDirectory: boolean;
-}
+import { FileItem, PreviewState, DeleteDialogState } from '../../interfaces/file.interfaces';
 
 /**
  * Feed Component

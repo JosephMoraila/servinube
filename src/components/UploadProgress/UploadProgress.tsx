@@ -1,12 +1,6 @@
 import { FC } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-
-interface UploadProgressProps {
-  uploadProgress: Array<{
-    name: string;
-    progress: number;
-  }>;
-}
+import { UploadProgressProps } from '../../interfaces/component.interfaces';
 
 export const UploadProgress: FC<UploadProgressProps> = ({ uploadProgress }) => {
   const { effectiveMode } = useDarkMode();

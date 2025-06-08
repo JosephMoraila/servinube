@@ -1,29 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
+import { useDarkMode } from '../../contexts/DarkModeContext';
+import { DialogInputProps } from '../../interfaces/component.interfaces';
 import './CuadroDialogoInput.css';
-import { useDarkMode } from '../../contexts/DarkModeContext'; 
 
-interface DialogInputProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onConfirm: (inputValue: string) => void;
-    title?: string; // Optional, the title of the dialog
-    description?: string; // Optional, description below the title
-    placeholder?: string; // Placeholder for the input
-    confirmText?: string; // Text for the confirm button
-    cancelText?: string; // Text for the cancel button
-    typeInput?: string;
-}
-
-const DialogInput: React.FC<DialogInputProps> = ({
-    isOpen,
-    onClose,
-    onConfirm,
-    title = '',
-    description = '',
-    placeholder = 'Enter a value',
-    confirmText = 'Confirm',
-    cancelText = 'Cancel',
-    typeInput = 'password'
+const DialogInput: FC<DialogInputProps> = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  description,
+  confirmText,
+  cancelText,
+  placeholder,
+  typeInput
 }) => {
     const [inputValue, setInputValue] = useState<string>('');
     const { effectiveMode } = useDarkMode(); 

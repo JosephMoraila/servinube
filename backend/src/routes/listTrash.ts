@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import UPLOAD_DIRECTORY from '../utils/UPLOAD_DIRECTORY';
 import { asyncHandler } from '../utils/asyncHandler';
+import { fileTypeFromBuffer } from 'file-type';
 
 const router = Router();
 
@@ -34,11 +35,27 @@ router.get('/listTrash', asyncHandler(async (req: Request, res: Response) => {
             const filesInfo = await Promise.all(files.map(async (file) => {
                 const filePath = path.join(trashDir, file);
                 const stats = await fs.stat(filePath);
+                
+                // Determinar el tipo MIME para archivos
+                let mimeType = null;
+                if (!stats.isDirectory()) {
+                    try {
+                        const fileBuffer = await fs.readFile(filePath);
+                        const type = await fileTypeFromBuffer(fileBuffer);
+                        if (type) {
+                            mimeType = type.mime;
+                        }
+                    } catch (error) {
+                        console.warn(`No se pudo determinar el tipo de archivo para ${file}`);
+                    }
+                }
+
                 return {
                     name: file,
                     isDirectory: stats.isDirectory(),
                     size: stats.size,
-                    createdAt: stats.birthtime
+                    createdAt: stats.birthtime,
+                    mimeType: stats.isDirectory() ? null : (mimeType || 'application/octet-stream')
                 };
             }));
             

@@ -9,10 +9,12 @@ import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog';
 
 interface TrashFile {
-  pathName: string;      // nombre completo con timestamp y ruta (antes era displayName)
-  displayName: string;   // nombre original del archivo (antes era name)
-  originalPath: string;  // se mantiene igual
-  timestamp: string;     // se mantiene igual
+  pathName: string;      // nombre completo con timestamp y ruta
+  displayName: string;   // nombre original del archivo
+  originalPath: string;  // ubicación original
+  timestamp: string;     // timestamp de eliminación
+  mimeType?: string | null; // tipo MIME del archivo
+  isDirectory: boolean;  // si es directorio o archivo
 }
 
 const Trash = () => {
@@ -34,17 +36,19 @@ const Trash = () => {
         withCredentials: true
       });
       
-      const trashFiles: TrashFile[] = response.data.files.map((fileName: string) => {
-        const parts = fileName.toString().split('_');
+      const trashFiles: TrashFile[] = response.data.files.map((file: any) => {
+        const parts = file.name.toString().split('_');
         const timestamp = parts[0];
         const displayName = parts[parts.length - 1];
         const originalPath = parts.slice(1, -1).join('/') || 'raíz';
 
         return {
-          pathName: fileName,
+          pathName: file.name,
           displayName: displayName,
           originalPath: originalPath,
-          timestamp: new Date(parseInt(timestamp)).toLocaleString()
+          timestamp: new Date(parseInt(timestamp)).toLocaleString(),
+          mimeType: file.mimeType,
+          isDirectory: file.isDirectory
         };
       });
       
@@ -203,16 +207,37 @@ const Trash = () => {
     handlePreview(file.pathName, file.displayName);
   };
 
-  const getFileIcon = (displayName: string) => {
-    // Si el nombre no tiene punto o termina en punto, es una carpeta
-    if (!displayName.includes('.') || displayName.endsWith('.')) {
+  const getFileIcon = (file: TrashFile) => {
+    // Si es un directorio, retornar icono de carpeta
+    if (file.isDirectory) {
       return '📁';
     }
 
-    // Obtener la extensión del archivo
-    const extension = displayName.split('.').pop()?.toLowerCase() || '';
+    // Si tenemos el mimeType, usarlo para determinar el icono
+    if (file.mimeType) {
+      if (file.mimeType.startsWith('image/')) {
+        return '🖼️';
+      }
+      if (file.mimeType.startsWith('video/')) {
+        return '🎥';
+      }
+      if (file.mimeType.startsWith('audio/')) {
+        return '🎵';
+      }
+      if (file.mimeType === 'application/pdf') {
+        return '📄';
+      }
+      if (file.mimeType.includes('compressed') || file.mimeType.includes('zip') || file.mimeType.includes('archive')) {
+        return '🗜️';
+      }
+      if (file.mimeType.includes('text/')) {
+        return '📃';
+      }
+    }
 
-    // Retornar el icono según el tipo de archivo
+    // Si no hay mimeType o no es un tipo reconocido, usar la extensión como fallback
+    const extension = file.displayName.split('.').pop()?.toLowerCase() || '';
+    
     switch (extension) {
       // Imágenes
       case 'jpg':
@@ -221,19 +246,9 @@ const Trash = () => {
       case 'gif':
       case 'bmp':
       case 'webp':
+      case 'svg':
         return '🖼️';
-
-      // Videos
-      case 'mp4':
-      case 'mov':
-      case 'avi':
-      case 'mkv':
-      case 'wmv':
-        return '🎥';
-
       // Documentos
-      case 'pdf':
-        return '📄';
       case 'doc':
       case 'docx':
         return '📝';
@@ -243,21 +258,12 @@ const Trash = () => {
       case 'ppt':
       case 'pptx':
         return '📽️';
-
-      // Archivos de texto
+      case 'pdf':
+        return '📄';
       case 'txt':
       case 'md':
         return '📃';
-
-      // Archivos comprimidos
-      case 'zip':
-      case 'rar':
-      case '7z':
-      case 'tar':
-      case 'gz':
-        return '🗜️';
-
-      // Archivos de código
+      // Código
       case 'js':
       case 'jsx':
       case 'ts':
@@ -269,15 +275,6 @@ const Trash = () => {
       case 'cpp':
       case 'c':
         return '👨‍💻';
-
-      // Archivos de audio
-      case 'mp3':
-      case 'wav':
-      case 'ogg':
-      case 'm4a':
-      case 'flac':
-        return '🎵';
-
       // Por defecto
       default:
         return '📄';
@@ -305,7 +302,7 @@ const Trash = () => {
                 onClick={() => handleFileClick(file)}
                 onContextMenu={(e) => handleContextMenu(e, file)}
               >
-                <div className="file-icon">{getFileIcon(file.displayName)}</div>
+                <div className="file-icon">{getFileIcon(file)}</div>
                 <div className="file-info">
                   <div className="file-details">
                     <span className="file-name-display">{file.displayName}</span>

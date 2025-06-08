@@ -3,6 +3,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { asyncHandler } from "../utils/asyncHandler";
+import { fileTypeFromBuffer } from 'file-type';
 
 const router = Router();
 
@@ -247,12 +248,28 @@ router.get("/list", asyncHandler(async (req: Request, res: Response) => {
         const files = await fs.promises.readdir(targetPath);
         const filesInfo = await Promise.all(files.map(async (file) => {
             const filePath = path.join(targetPath, file);
-            const stats = await fs.promises.stat(filePath);
+            const stats = fs.statSync(filePath);
+            
+            // Determinar el mimetype basado en el contenido del archivo si no tiene extensión
+            let mimeType = 'application/octet-stream';
+            if (!stats.isDirectory()) {
+                try {
+                    const fileBuffer = fs.readFileSync(filePath);
+                    const type = await fileTypeFromBuffer(fileBuffer);
+                    if (type) {
+                        mimeType = type.mime;
+                    }
+                } catch (error) {
+                    console.warn(`No se pudo determinar el tipo de archivo para ${file}`);
+                }
+            }
+
             return {
                 name: file,
                 isDirectory: stats.isDirectory(),
                 size: stats.size,
-                createdAt: stats.birthtime
+                createdAt: stats.birthtime,
+                mimeType: stats.isDirectory() ? null : mimeType
             };
         }));
 

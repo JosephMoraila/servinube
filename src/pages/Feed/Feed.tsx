@@ -39,7 +39,7 @@ const Feed = () => {
   const {setMessageMessageBox, setColorMessageBox}= useMessageBoxContext();
 
   // File and folder management state
-  const [files, setFiles] = useState<{ name: string; isDirectory: boolean }[]>([]);
+  const [files, setFiles] = useState<{ name: string; isDirectory: boolean; mimeType?: string | null }[]>([]);
   const [folderName, setFolderName] = useState("");
   const [currentFolder, setCurrentFolder] = useState<string>("");
 
@@ -117,10 +117,11 @@ const Feed = () => {
       });
       
       const formattedFiles = response.data.files
-        .filter((file: { name: string }) => file.name !== '.trash') // Filtrar carpeta .trash
-        .map((file: { name: string }) => ({
+        .filter((file: { name: string }) => file.name !== '.trash')
+        .map((file: { name: string; isDirectory: boolean; mimeType: string | null }) => ({
           name: file.name,
-          isDirectory: !file.name.includes("."),
+          isDirectory: file.isDirectory,
+          mimeType: file.mimeType
         }));
       
       setFiles(formattedFiles);
@@ -460,16 +461,37 @@ const Feed = () => {
     }
   };
 
-  const getFileIcon = (name: string, isDirectory: boolean) => {
+  const getFileIcon = (name: string, isDirectory: boolean, mimeType?: string | null) => {
     // Si es un directorio, retornar icono de carpeta
     if (isDirectory) {
       return '📁';
     }
 
-    // Obtener la extensión del archivo
-    const extension = name.split('.').pop()?.toLowerCase() || '';
+    // Si tenemos el mimeType, usarlo para determinar el icono
+    if (mimeType) {
+      if (mimeType.startsWith('image/')) {
+        return '🖼️';
+      }
+      if (mimeType.startsWith('video/')) {
+        return '🎥';
+      }
+      if (mimeType.startsWith('audio/')) {
+        return '🎵';
+      }
+      if (mimeType === 'application/pdf') {
+        return '📄';
+      }
+      if (mimeType.includes('compressed') || mimeType.includes('zip') || mimeType.includes('archive')) {
+        return '🗜️';
+      }
+      if (mimeType.includes('text/')) {
+        return '📃';
+      }
+    }
 
-    // Retornar el icono según el tipo de archivo
+    // Si no hay mimeType o no es un tipo reconocido, usar la extensión como fallback
+    const extension = name.split('.').pop()?.toLowerCase() || '';
+    
     switch (extension) {
       // Imágenes
       case 'jpg':
@@ -478,19 +500,9 @@ const Feed = () => {
       case 'gif':
       case 'bmp':
       case 'webp':
+      case 'svg':
         return '🖼️';
-
-      // Videos
-      case 'mp4':
-      case 'mov':
-      case 'avi':
-      case 'mkv':
-      case 'wmv':
-        return '🎥';
-
       // Documentos
-      case 'pdf':
-        return '📄';
       case 'doc':
       case 'docx':
         return '📝';
@@ -500,21 +512,12 @@ const Feed = () => {
       case 'ppt':
       case 'pptx':
         return '📽️';
-
-      // Archivos de texto
+      case 'pdf':
+        return '📄';
       case 'txt':
       case 'md':
         return '📃';
-
-      // Archivos comprimidos
-      case 'zip':
-      case 'rar':
-      case '7z':
-      case 'tar':
-      case 'gz':
-        return '🗜️';
-
-      // Archivos de código
+      // Código
       case 'js':
       case 'jsx':
       case 'ts':
@@ -526,15 +529,6 @@ const Feed = () => {
       case 'cpp':
       case 'c':
         return '👨‍💻';
-
-      // Archivos de audio
-      case 'mp3':
-      case 'wav':
-      case 'ogg':
-      case 'm4a':
-      case 'flac':
-        return '🎵';
-
       // Por defecto
       default:
         return '📄';
@@ -589,17 +583,15 @@ const Feed = () => {
 
       <div className="files-container">
         <div className="files-grid">
-          {files.map((file, index) => (
+          {files.map((file) => (
             <div
-              key={index}
+              key={file.name}
               className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
               onClick={() => handleFileClick(file)}
               onContextMenu={(e) => handleContextMenu(e, file.name, file.isDirectory)}
             >
-              <div className="file-icon">
-                {getFileIcon(file.name, file.isDirectory)}
-              </div>
-              <div className="file-name">{file.name}</div>
+              <span className="file-icon">{getFileIcon(file.name, file.isDirectory, file.mimeType)}</span>
+              <span className="file-name">{file.name}</span>
             </div>
           ))}
         </div>

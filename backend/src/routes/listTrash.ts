@@ -30,8 +30,20 @@ router.get('/listTrash', asyncHandler(async (req: Request, res: Response) => {
         try {
             const files = await fs.readdir(trashDir);
             console.log('✅ Archivos encontrados en papelera:', files.length);
-            console.log('📄 Lista de archivos:', files);
-            res.json({ files });
+            
+            const filesInfo = await Promise.all(files.map(async (file) => {
+                const filePath = path.join(trashDir, file);
+                const stats = await fs.stat(filePath);
+                return {
+                    name: file,
+                    isDirectory: stats.isDirectory(),
+                    size: stats.size,
+                    createdAt: stats.birthtime
+                };
+            }));
+            
+            console.log('📄 Lista de archivos:', filesInfo);
+            res.json({ files: filesInfo });
         } catch (error) {
             if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
                 console.log('ℹ️ Papelera vacía o no existe para usuario:', userId);

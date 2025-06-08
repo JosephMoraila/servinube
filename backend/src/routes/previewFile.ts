@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 import { asyncHandler } from '../utils/asyncHandler';
+import { fileTypeFromBuffer } from 'file-type';
 
 const router = express.Router();
 
@@ -34,22 +35,31 @@ router.get('/preview', asyncHandler(async (req: Request, res: Response) => {
         // Leer el archivo
         const fileContent = fs.readFileSync(filePath);
         
-        // Determinar el tipo MIME
-        const ext = path.extname(filePath).toLowerCase();
-        const mimeTypes: { [key: string]: string } = {
-            '.jpg': 'image/jpeg',
-            '.jpeg': 'image/jpeg',
-            '.png': 'image/png',
-            '.gif': 'image/gif',
-            '.pdf': 'application/pdf',
-            '.mp4': 'video/mp4',
-            '.webm': 'video/webm',
-            '.mp3': 'audio/mpeg',
-            '.wav': 'audio/wav',
-            '.txt': 'text/plain',
-        };
+        // Intentar determinar el tipo MIME por el contenido del archivo
+        let contentType = 'application/octet-stream';
+        
+        // Primero intentamos detectar el tipo por el contenido del archivo
+        const fileType = await fileTypeFromBuffer(fileContent);
+        if (fileType) {
+            contentType = fileType.mime;
+        } else {
+            // Si no se puede detectar por contenido, intentamos por extensión
+            const ext = path.extname(filePath).toLowerCase();
+            const mimeTypes: { [key: string]: string } = {
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.png': 'image/png',
+                '.gif': 'image/gif',
+                '.pdf': 'application/pdf',
+                '.mp4': 'video/mp4',
+                '.webm': 'video/webm',
+                '.mp3': 'audio/mpeg',
+                '.wav': 'audio/wav',
+                '.txt': 'text/plain',
+            };
+            contentType = mimeTypes[ext] || contentType;
+        }
 
-        const contentType = mimeTypes[ext] || 'application/octet-stream';
         console.log('📋 Content-Type:', contentType);
 
         // Enviar la respuesta

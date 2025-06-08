@@ -18,6 +18,7 @@
     "dockerode": "^4.0.4",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "file-type": "^21.0.0",
     "fs-extra": "^11.3.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",

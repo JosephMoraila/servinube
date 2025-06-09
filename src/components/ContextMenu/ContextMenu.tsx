@@ -9,7 +9,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   isDirectory,
   onDownload,
   onDelete,
-  onShare
+  //onShare
 }) => {
   const { effectiveMode } = useDarkMode();
   const menuRef = useRef<HTMLDivElement>(null);

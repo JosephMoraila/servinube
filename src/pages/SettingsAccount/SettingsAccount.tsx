@@ -14,7 +14,7 @@ const SettingsAccount: React.FC = () => {
     const navigate = useNavigate();
     const { userId } = useAuth();
     const { setIsLoadingBar } = useLoadingBar();
-    const {messageMessageBox, setMessageMessageBox, colorMessageBox, setColorMessageBox} = useMessageBoxContext();
+    const {messageMessageBox, setMessageMessageBox, setColorMessageBox} = useMessageBoxContext();
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);

@@ -1,5 +1,4 @@
-import './WhatIsItAbout.css'
-import { useState} from 'react';
+import './WhatIsItAbout.css';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 
 import cellphone_black from '/images/cellphone_black.png';

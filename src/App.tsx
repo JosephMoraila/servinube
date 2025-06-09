@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
 import "./App.css";
 
 import { DarkModeProvider } from "../src/contexts/DarkModeContext";

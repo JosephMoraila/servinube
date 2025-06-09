@@ -55,8 +55,6 @@ const Feed = () => {
     fileName: '', 
     isDirectory: false 
   });
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const [fileToShare, setFileToShare] = useState<FileItem | null>(null);
 
   // DOM References
   const fileInputRef = useRef<HTMLInputElement>(null);

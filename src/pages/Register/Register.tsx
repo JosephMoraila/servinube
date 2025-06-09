@@ -1,6 +1,6 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMessageBoxContext } from '../../contexts/MessageBoxContext';
 import axios from 'axios';
 import './Register.css'
@@ -23,11 +23,7 @@ const Register = () => {
   });
 
   // Estados de UI
-  const [isLoadingBar, setIsLoadingBar] = useState(false);
   const [error, setError] = useState('');
-  const storedStep = localStorage.getItem('stepRegister');
-  const [currentStep, setCurrentStep] = useState(storedStep ? Number(storedStep) : 1);
-  const totalSteps = 2;
 
   // Manejadores de eventos
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

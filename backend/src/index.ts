@@ -19,6 +19,7 @@ import listTrashRouter from './routes/listTrash';
 import permanentDeleteRouter from './routes/permanentDelete';
 import sharedFilesRouter from './routes/sharedFiles';
 import searchUsersRouter from './routes/searchUser';
+import shareFileRouter from './routes/shareFile';
 
 dotenv.config();
 
@@ -92,6 +93,8 @@ app.use("/api", listTrashRouter);
 app.use("/api", permanentDeleteRouter);
 app.use("/api", sharedFilesRouter);
 app.use("/api", searchUsersRouter);
+app.use("/api", shareFileRouter);
+
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

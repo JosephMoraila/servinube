@@ -9,7 +9,7 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   isDirectory,
   onDownload,
   onDelete,
-  //onShare
+  onShare
 }) => {
   const { effectiveMode } = useDarkMode();
   const menuRef = useRef<HTMLDivElement>(null);
@@ -56,10 +56,10 @@ export const ContextMenu: FC<ContextMenuProps> = ({
             <span className="icon">⬇️</span>
             DESCARGAR
           </div>
-          {/*<div className="menu-item" onClick={() => onShare(file)}>
+          <div className="menu-item" onClick={() => onShare(file)}>
             <span className="icon">↗️</span>
             COMPARTIR
-          </div>*/}
+          </div>
         </>
       )}
       <div className="menu-item delete" onClick={() => onDelete(file, isDirectory)}>

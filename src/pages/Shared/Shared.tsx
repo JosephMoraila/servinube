@@ -4,6 +4,7 @@ import './Shared.css';
 import { getFileIcon } from '../../utils/fileIcons';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useAuth } from '../../components/ProtectedRoute/ProtectedRoute';
+import API_BASE_URL from '../../constants/PAGE_URL';
 
 interface SharedFile {
     id: number;
@@ -30,7 +31,7 @@ export default function Shared() {
 
     const fetchSharedFiles = async () => {
         try {
-            const response = await fetch(`/api/shared-files?userId=${userId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/shared-files?userId=${userId}`, {
                 credentials: 'include'
             });
             
@@ -48,7 +49,7 @@ export default function Shared() {
 
     const handleFileClick = async (filePath: string) => {
         try {
-            const response = await fetch(`/api/preview-file?path=${encodeURIComponent(filePath)}`, {
+            const response = await fetch(`${API_BASE_URL}/api/preview-file?path=${encodeURIComponent(filePath)}`, {
                 credentials: 'include'
             });
             

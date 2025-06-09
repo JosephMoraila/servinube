@@ -248,6 +248,7 @@ const Feed = () => {
    * @param {string} fileName - The name of the file to share
    */
   const handleShare = (fileName: string) => {
+    console.log("🔗 Abriendo diálogo de compartir para:", fileName);
     setShareDialogState({
       isOpen: true,
       fileName,
@@ -262,6 +263,7 @@ const Feed = () => {
    * @param {string} username - The username to share the file with
    */
   const handleShareSubmit = async (username: string) => {
+    console.log("🔗 Compartiendo archivo:", shareDialogState.fileName, "con usuario:", username);
     setShareDialogState(prev => ({ ...prev, isSharing: true, error: null }));
     try {
       await axios.post(`${API_BASE_URL}/api/shareFile`, {

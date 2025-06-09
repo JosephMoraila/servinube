@@ -92,11 +92,11 @@ const Navigation: React.FC = () => {
                 Papelera
               </NavLink>
             </li>
-            {/*<li>
+            <li>
               <NavLink to="/feed/shared" className={({ isActive }) => (isActive ? 'active' : '')}>
                 Compartido
               </NavLink>
-            </li>*/}
+            </li>
           </ul>
         </div>
       </div>
@@ -167,11 +167,11 @@ const Navigation: React.FC = () => {
                 </NavLink>
               </li>
 
-              {/*<li>
+              <li>
                 <NavLink to="/feed/shared" className={({ isActive }) => (isActive ? 'active' : '')}>
                   Compartido
                 </NavLink>
-              </li>*/}
+              </li>
     
               <li>
                 <NavLink to="/feed/settings" className={({ isActive }) => (isActive ? 'active' : '')}>

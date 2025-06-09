@@ -9,6 +9,7 @@ import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile
 import DialogInput from '../../components/CuadroDialogoInput/CuadroDialogoInput';
 import { UploadProgress } from '../../components/UploadProgress/UploadProgress';
 import { ContextMenu } from '../../components/ContextMenu/ContextMenu';
+import ShareDialog from '../../components/ShareDialog/ShareDialog';
 import { useFileManager } from '../../hooks/useFileManager';
 import { useContextMenu } from '../../hooks/useContextMenu';
 import { getFileIcon } from '../../utils/fileIcons';
@@ -37,6 +38,12 @@ const Feed = () => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [folderName, setFolderName] = useState("");
   const [currentFolder, setCurrentFolder] = useState<string>("");
+  const [shareDialogState, setShareDialogState] = useState({
+    isOpen: false,
+    fileName: '',
+    isSharing: false,
+    error: null as string | null
+  });
 
   // UI state management
   const [showNewMenu, setShowNewMenu] = useState(false);
@@ -48,6 +55,8 @@ const Feed = () => {
     fileName: '', 
     isDirectory: false 
   });
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [fileToShare, setFileToShare] = useState<FileItem | null>(null);
 
   // DOM References
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -236,6 +245,46 @@ const Feed = () => {
     }
   };
 
+  /**
+   * Opens the share dialog for a file
+   * @param {string} fileName - The name of the file to share
+   */
+  const handleShare = (fileName: string) => {
+    setShareDialogState({
+      isOpen: true,
+      fileName,
+      isSharing: false,
+      error: null
+    });
+  };
+
+  /**
+   * Handles the sharing of a file with a specific user
+   * @async
+   * @param {string} username - The username to share the file with
+   */
+  const handleShareSubmit = async (username: string) => {
+    setShareDialogState(prev => ({ ...prev, isSharing: true, error: null }));
+    try {
+      await axios.post(`${API_BASE_URL}/api/shareFile`, {
+        fileName: shareDialogState.fileName,
+        folder: currentFolder,
+        userId,
+        username
+      }, { withCredentials: true });
+      
+      setColorMessageBox("#4BB543");
+      setMessageMessageBox("Archivo compartido exitosamente");
+      setShareDialogState(prev => ({ ...prev, isOpen: false }));
+    } catch (error: any) {
+      console.error("Error al compartir el archivo:", error);
+      const errorMessage = error.response?.data?.message || "Error al compartir el archivo";
+      setShareDialogState(prev => ({ ...prev, error: errorMessage }));
+    } finally {
+      setShareDialogState(prev => ({ ...prev, isSharing: false }));
+    }
+  };
+
   const handlePreview = async (fileName: string) => {
     try {
       console.log("🔍 Attempting preview for:", { fileName, folder: currentFolder, userId });
@@ -347,22 +396,7 @@ const Feed = () => {
   }, [closeContextMenu]);
 
 
-  const handleShare = async (fileName: string) => {
-    try {
-      await axios.post(`${API_BASE_URL}/api/shareFile`, {
-        fileName,
-        folder: currentFolder,
-        userId
-      }, { withCredentials: true });
-      
-      setColorMessageBox("#4BB543");
-      setMessageMessageBox("Archivo compartido exitosamente");
-    } catch (error) {
-      console.error("Error al compartir el archivo:", error);
-      setColorMessageBox("#ff0000");
-      setMessageMessageBox("Error al compartir el archivo");
-    }
-  };
+
 
   return (
     <div 
@@ -510,6 +544,15 @@ const Feed = () => {
         cancelText="Cancelar"
         placeholder="Escribe ELIMINAR para confirmar"
         typeInput="text"
+      />
+
+      <ShareDialog
+        isOpen={shareDialogState.isOpen}
+        onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
+        onShare={handleShareSubmit}
+        fileName={shareDialogState.fileName}
+        isSharing={shareDialogState.isSharing}
+        error={shareDialogState.error}
       />
     </div>
   );

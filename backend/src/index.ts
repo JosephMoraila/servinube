@@ -17,6 +17,7 @@ import deleteFolder from "./routes/deleteFolder";
 import restoreFileRouter from './routes/restoreFile';
 import listTrashRouter from './routes/listTrash';
 import permanentDeleteRouter from './routes/permanentDelete';
+import sharedFilesRouter from './routes/sharedFiles';
 
 dotenv.config();
 
@@ -87,6 +88,7 @@ app.use("/api", deleteFolder);
 app.use("/api", restoreFileRouter);
 app.use("/api", listTrashRouter);
 app.use("/api", permanentDeleteRouter);
+app.use("/api", sharedFilesRouter);
 
 // Middleware de manejo de errores
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

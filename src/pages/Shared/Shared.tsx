@@ -1,3 +1,10 @@
+/**
+ * Shared Component - Manages and displays files shared by and with the user
+ * This component provides a tabbed interface to view:
+ * 1. Files shared with the current user
+ * 2. Files that the current user has shared with others
+ */
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Shared.css';
@@ -8,18 +15,22 @@ import API_BASE_URL from '../../constants/PAGE_URL';
 import axios from 'axios';
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
 
+/** 
+ * Interface representing a shared file's data structure
+ */
 interface SharedFile {
-    id: number;
-    file_path: string;
-    file_name: string;
-    owner_id: number;
-    owner_name: string;
-    shared_with_name?: string;
-    shared_at: string;
-    mimeType?: string;
+    id: number;           // Unique identifier for the shared file
+    file_path: string;    // Full path to the file in the system
+    file_name: string;    // Name of the file
+    owner_id: number;     // ID of the file's owner
+    owner_name: string;   // Name of the file's owner
+    shared_with_name?: string;  // Name of the user the file is shared with (optional)
+    shared_at: string;    // Timestamp when the file was shared
+    mimeType?: string;    // MIME type of the file (optional)
 }
 
 export default function Shared() {
+    // Hooks and state management
     const userId = useAuth().userId;
     const { effectiveMode } = useDarkMode();
     const [sharedByMe, setSharedByMe] = useState<SharedFile[]>([]);
@@ -33,6 +44,10 @@ export default function Shared() {
         // eslint-disable-next-line
     }, []);
 
+    /**
+     * Fetches the list of shared files from the server
+     * This includes both files shared by the user and files shared with the user
+     */
     const fetchSharedFiles = async () => {
         try {
             const response = await fetch(`${API_BASE_URL}/api/shared-files?userId=${userId}`, {
@@ -49,7 +64,14 @@ export default function Shared() {
         } catch (error) {
             console.error('Error fetching shared files:', error);
         }
-    };    const handleFileClick = async (filePath: string, ownerId: number) => {
+    };
+
+    /**
+     * Handles clicking on a file to preview it
+     * @param filePath - The full path to the file
+     * @param ownerId - The ID of the file's owner
+     */
+    const handleFileClick = async (filePath: string, ownerId: number) => {
         console.log('File path clicked:', filePath);
         try {
             const pathParts = filePath.split('/');
@@ -84,7 +106,13 @@ export default function Shared() {
         } catch (error) {
             console.error('Error previewing file:', error);
         }
-    };    const handleDownload = async (fileName: string) => {
+    };
+
+    /**
+     * Handles file download when requested from the preview modal
+     * @param fileName - The name of the file to download
+     */
+    const handleDownload = async (fileName: string) => {
         try {
             // Buscar el archivo en ambas listas
             const file = [...sharedByMe, ...sharedWithMe].find(f => f.file_name === fileName);
@@ -120,6 +148,7 @@ export default function Shared() {
         }
     };
 
+    // Component rendering
     return (
         <div className={`shared-container ${effectiveMode === 'dark' ? 'dark' : ''}`}>
             <div className={`shared-tabs ${effectiveMode === 'dark' ? 'dark' : ''}`}>

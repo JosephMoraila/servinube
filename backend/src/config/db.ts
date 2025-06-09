@@ -45,7 +45,8 @@ async function initializeDatabase() {
 
 async function initializeTables() {
     try {
-        const tableExists = await pool.query(`
+        // Check usuarios table
+        const usuariosExists = await pool.query(`
             SELECT EXISTS (
                 SELECT FROM pg_tables
                 WHERE schemaname = 'public'
@@ -53,7 +54,7 @@ async function initializeTables() {
             );
         `);
 
-        if (!tableExists.rows[0].exists) {
+        if (!usuariosExists.rows[0].exists) {
             console.log("⚠️ Tabla 'usuarios' no existe. Creándola...");
             
             await pool.query(`
@@ -67,6 +68,35 @@ async function initializeTables() {
             console.log("✅ Tabla 'usuarios' creada exitosamente");
         } else {
             console.log("✅ Tabla 'usuarios' ya existe");
+        }
+
+        // Check shared_files table
+        const sharedFilesExists = await pool.query(`
+            SELECT EXISTS (
+                SELECT FROM pg_tables
+                WHERE schemaname = 'public'
+                AND tablename = 'shared_files'
+            );
+        `);
+
+        if (!sharedFilesExists.rows[0].exists) {
+            console.log("⚠️ Tabla 'shared_files' no existe. Creándola...");
+            
+            await pool.query(`
+                CREATE TABLE shared_files (
+                    id SERIAL PRIMARY KEY,
+                    file_path VARCHAR(255) NOT NULL,
+                    file_name VARCHAR(255) NOT NULL,
+                    owner_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+                    shared_with_id INTEGER REFERENCES usuarios(id) ON DELETE CASCADE,
+                    shared_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    CONSTRAINT unique_share UNIQUE(file_path, owner_id, shared_with_id)
+                );
+            `);
+            
+            console.log("✅ Tabla 'shared_files' creada exitosamente");
+        } else {
+            console.log("✅ Tabla 'shared_files' ya existe");
         }
     } catch (error) {
         console.error("❌ Error al inicializar las tablas:", error);

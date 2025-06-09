@@ -21,6 +21,7 @@ import Register from "./pages/Register/Register";
 import Feed from "./pages/Feed/Feed";
 import SettingsAccount from "./pages/SettingsAccount/SettingsAccount";
 import Trash from "./pages/Trash/Trash";
+import Shared from "./pages/Shared/Shared";
 
 import axios from "axios";
 
@@ -57,6 +58,7 @@ const AppContent: React.FC = () => {
         <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
         <Route path="/feed/settings" element={<ProtectedRoute><SettingsAccount /></ProtectedRoute>} />
         <Route path="/feed/trash" element={<ProtectedRoute><Trash /></ProtectedRoute>} />
+        <Route path="/feed/shared" element={<ProtectedRoute><Shared /></ProtectedRoute>} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

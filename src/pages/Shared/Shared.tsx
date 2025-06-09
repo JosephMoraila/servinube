@@ -5,6 +5,8 @@ import { getFileIcon } from '../../utils/fileIcons';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useAuth } from '../../components/ProtectedRoute/ProtectedRoute';
 import API_BASE_URL from '../../constants/PAGE_URL';
+import axios from 'axios';
+import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
 
 interface SharedFile {
     id: number;
@@ -14,6 +16,7 @@ interface SharedFile {
     owner_name: string;
     shared_with_name?: string;
     shared_at: string;
+    mimeType?: string;
 }
 
 export default function Shared() {
@@ -22,6 +25,7 @@ export default function Shared() {
     const [sharedByMe, setSharedByMe] = useState<SharedFile[]>([]);
     const [sharedWithMe, setSharedWithMe] = useState<SharedFile[]>([]);
     const [activeTab, setActiveTab] = useState<'shared-by-me' | 'shared-with-me'>('shared-with-me');
+    const [preview, setPreview] = useState<{ url: string; type: string; name: string; } | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -48,17 +52,73 @@ export default function Shared() {
     };
 
     const handleFileClick = async (filePath: string) => {
+        console.log('File path clicked:', filePath);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/preview-file?path=${encodeURIComponent(filePath)}`, {
-                credentials: 'include'
-            });
+            // Extraer el nombre del archivo y la carpeta del filePath
+            const pathParts = filePath.split('/');
+            // Removemos el userId del inicio del path ya que está en filePath
+            pathParts.shift(); // Elimina el primer elemento (userId)
+            const fileName = pathParts.pop() || '';
+            const folder = pathParts.join('/');
             
-            if (response.ok) {
-                // Aquí podrías abrir un modal para previsualizar el archivo
-                // o redirigir a una página de previsualización
+            console.log('Processed path:', {
+                fileName,
+                folder,
+                originalPath: filePath
+            });
+
+            const response = await axios.get(`${API_BASE_URL}/api/preview`, {
+                params: {
+                    fileName,
+                    folder,
+                    userId // Este userId viene del contexto de autenticación
+                },
+                responseType: 'blob',
+                withCredentials: true
+            });
+
+            if (response.status === 200) {
+                const blob = new Blob([response.data], { type: response.headers['content-type'] });
+                const url = URL.createObjectURL(blob);
+                const type = response.headers['content-type'];
+                setPreview({ url, type, name: fileName });
             }
         } catch (error) {
             console.error('Error previewing file:', error);
+        }
+    };    const handleDownload = async (fileName: string) => {
+        try {
+            // Buscar el archivo en ambas listas
+            const file = [...sharedByMe, ...sharedWithMe].find(f => f.file_name === fileName);
+            if (!file) {
+                console.error('Archivo no encontrado');
+                return;
+            }
+            
+            const pathParts = file.file_path.split('/');
+            pathParts.shift(); // Elimina el primer elemento (userId)
+            const folder = pathParts.slice(0, -1).join('/');
+            
+            const response = await axios.get(`${API_BASE_URL}/api/download`, {
+                params: { 
+                    fileName,
+                    folder,
+                    userId 
+                },
+                responseType: 'blob',
+                withCredentials: true
+            });
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error('Error downloading file:', error);
         }
     };
 
@@ -91,11 +151,9 @@ export default function Shared() {
                                     className="file-card"
                                     onClick={() => handleFileClick(file.file_path)}
                                 >
-                                    <img 
-                                        src={getFileIcon(file.file_name, false)} 
-                                        alt="File icon" 
-                                        className="file-icon"
-                                    />
+                                    <span className="file-icon">
+                                        {getFileIcon(file.file_name, false, file.mimeType)}
+                                    </span>
                                     <div className="file-info">
                                         <p className="file-name">{file.file_name}</p>
                                         <p className="shared-by">Compartido por: {file.owner_name}</p>
@@ -118,11 +176,9 @@ export default function Shared() {
                                     className="file-card"
                                     onClick={() => handleFileClick(file.file_path)}
                                 >
-                                    <img 
-                                        src={getFileIcon(file.file_name, false)} 
-                                        alt="File icon" 
-                                        className="file-icon"
-                                    />
+                                    <span className="file-icon">
+                                        {getFileIcon(file.file_name, false, file.mimeType)}
+                                    </span>
                                     <div className="file-info">
                                         <p className="file-name">{file.file_name}</p>
                                         <p className="shared-with">
@@ -138,6 +194,14 @@ export default function Shared() {
                     </div>
                 )}
             </div>
+
+            {preview && (
+                <ModalPreviewFile
+                    preview={preview}
+                    onClose={() => setPreview(null)}
+                    onDownload={handleDownload}
+                />
+            )}
         </div>
     );
 }

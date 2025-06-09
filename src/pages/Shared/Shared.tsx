@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Shared.css';
 import { getFileIcon } from '../../utils/fileIcons';
 import { useDarkMode } from '../../contexts/DarkModeContext';
+import { useAuth } from '../../components/ProtectedRoute/ProtectedRoute';
 
 interface SharedFile {
     id: number;
@@ -10,10 +11,12 @@ interface SharedFile {
     file_name: string;
     owner_id: number;
     owner_name: string;
+    shared_with_name?: string;
     shared_at: string;
 }
 
 export default function Shared() {
+    const userId = useAuth().userId;
     const { effectiveMode } = useDarkMode();
     const [sharedByMe, setSharedByMe] = useState<SharedFile[]>([]);
     const [sharedWithMe, setSharedWithMe] = useState<SharedFile[]>([]);
@@ -22,11 +25,12 @@ export default function Shared() {
 
     useEffect(() => {
         fetchSharedFiles();
+        // eslint-disable-next-line
     }, []);
 
     const fetchSharedFiles = async () => {
         try {
-            const response = await fetch('/api/shared-files', {
+            const response = await fetch(`/api/shared-files?userId=${userId}`, {
                 credentials: 'include'
             });
             
@@ -120,7 +124,9 @@ export default function Shared() {
                                     />
                                     <div className="file-info">
                                         <p className="file-name">{file.file_name}</p>
-                                        <p className="shared-with">Compartido con: {file.owner_name}</p>
+                                        <p className="shared-with">
+                                            Compartido con: {file.shared_with_name}
+                                        </p>
                                         <p className="shared-date">
                                             {new Date(file.shared_at).toLocaleDateString()}
                                         </p>

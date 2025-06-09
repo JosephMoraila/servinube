@@ -49,14 +49,10 @@ export default function Shared() {
         } catch (error) {
             console.error('Error fetching shared files:', error);
         }
-    };
-
-    const handleFileClick = async (filePath: string) => {
+    };    const handleFileClick = async (filePath: string, ownerId: number) => {
         console.log('File path clicked:', filePath);
         try {
-            // Extraer el nombre del archivo y la carpeta del filePath
             const pathParts = filePath.split('/');
-            // Removemos el userId del inicio del path ya que está en filePath
             pathParts.shift(); // Elimina el primer elemento (userId)
             const fileName = pathParts.pop() || '';
             const folder = pathParts.join('/');
@@ -64,14 +60,16 @@ export default function Shared() {
             console.log('Processed path:', {
                 fileName,
                 folder,
-                originalPath: filePath
+                originalPath: filePath,
+                ownerId
             });
 
+            console.log('Fetching preview for file:', fileName, 'in folder:', folder, 'for ownerId:', ownerId);
             const response = await axios.get(`${API_BASE_URL}/api/preview`, {
                 params: {
                     fileName,
                     folder,
-                    userId // Este userId viene del contexto de autenticación
+                    userId: ownerId // Usamos el ID del propietario del archivo
                 },
                 responseType: 'blob',
                 withCredentials: true
@@ -103,7 +101,7 @@ export default function Shared() {
                 params: { 
                     fileName,
                     folder,
-                    userId 
+                    userId: file.owner_id // Using the file owner's ID instead of current user's ID
                 },
                 responseType: 'blob',
                 withCredentials: true
@@ -149,7 +147,7 @@ export default function Shared() {
                                 <div 
                                     key={file.id} 
                                     className="file-card"
-                                    onClick={() => handleFileClick(file.file_path)}
+                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
                                 >
                                     <span className="file-icon">
                                         {getFileIcon(file.file_name, false, file.mimeType)}
@@ -174,7 +172,7 @@ export default function Shared() {
                                 <div 
                                     key={file.id} 
                                     className="file-card"
-                                    onClick={() => handleFileClick(file.file_path)}
+                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
                                 >
                                     <span className="file-icon">
                                         {getFileIcon(file.file_name, false, file.mimeType)}

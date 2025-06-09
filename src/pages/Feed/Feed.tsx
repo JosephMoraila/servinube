@@ -347,6 +347,23 @@ const Feed = () => {
   }, [closeContextMenu]);
 
 
+  const handleShare = async (fileName: string) => {
+    try {
+      await axios.post(`${API_BASE_URL}/api/shareFile`, {
+        fileName,
+        folder: currentFolder,
+        userId
+      }, { withCredentials: true });
+      
+      setColorMessageBox("#4BB543");
+      setMessageMessageBox("Archivo compartido exitosamente");
+    } catch (error) {
+      console.error("Error al compartir el archivo:", error);
+      setColorMessageBox("#ff0000");
+      setMessageMessageBox("Error al compartir el archivo");
+    }
+  };
+
   return (
     <div 
       className={`feed-container ${effectiveMode === 'dark' ? 'dark' : ''}`} 
@@ -416,6 +433,7 @@ const Feed = () => {
           {...contextMenu}
           onDownload={downloadFile}
           onDelete={handleDelete}
+          onShare={handleShare}
         />
       )}
 

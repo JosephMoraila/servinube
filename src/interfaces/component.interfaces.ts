@@ -34,6 +34,7 @@ export interface ContextMenuProps {
   isDirectory: boolean;
   onDownload: (file: string) => void;
   onDelete: (file: string, isDirectory: boolean) => void;
+  onShare: (file: string) => void;
 }
 
 export interface ContextMenuState {

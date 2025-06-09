@@ -8,7 +8,8 @@ export const ContextMenu: FC<ContextMenuProps> = ({
   file,
   isDirectory,
   onDownload,
-  onDelete
+  onDelete,
+  onShare
 }) => {
   const { effectiveMode } = useDarkMode();
 
@@ -18,10 +19,16 @@ export const ContextMenu: FC<ContextMenuProps> = ({
       style={{ top: y, left: x }}
     >
       {!isDirectory && (
-        <div className="menu-item" onClick={() => onDownload(file)}>
-          <span className="icon">⬇️</span>
-          DESCARGAR
-        </div>
+        <>
+          <div className="menu-item" onClick={() => onDownload(file)}>
+            <span className="icon">⬇️</span>
+            DESCARGAR
+          </div>
+          <div className="menu-item" onClick={() => onShare(file)}>
+            <span className="icon">↗️</span>
+            COMPARTIR
+          </div>
+        </>
       )}
       <div className="menu-item delete" onClick={() => onDelete(file, isDirectory)}>
         <span className="icon">🗑️</span>

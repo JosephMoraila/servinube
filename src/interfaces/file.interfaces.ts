@@ -17,6 +17,7 @@ export interface FileItem {
   name: string;
   isDirectory: boolean;
   mimeType?: string | null;
+  size?: number;
 }
 
 /**

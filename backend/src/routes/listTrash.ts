@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import UPLOAD_DIRECTORY from '../utils/UPLOAD_DIRECTORY';
 import { asyncHandler } from '../utils/asyncHandler';
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer } from 'file-type';
 
 const router = Router();
 
@@ -39,9 +39,8 @@ router.get('/listTrash', asyncHandler(async (req: Request, res: Response) => {
                 // Determinar el tipo MIME para archivos
                 let mimeType = null;
                 if (!stats.isDirectory()) {
-                    try {
-                        const fileBuffer = await fs.readFile(filePath);
-                        const type = await fileTypeFromBuffer(fileBuffer);
+                    try {                        const fileBuffer = await fs.readFile(filePath);
+                        const type = await fromBuffer(fileBuffer);
                         if (type) {
                             mimeType = type.mime;
                         }

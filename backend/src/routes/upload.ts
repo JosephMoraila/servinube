@@ -3,7 +3,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { asyncHandler } from "../utils/asyncHandler";
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer } from 'file-type';
 
 const router = Router();
 
@@ -255,7 +255,7 @@ router.get("/list", asyncHandler(async (req: Request, res: Response) => {
             if (!stats.isDirectory()) {
                 try {
                     const fileBuffer = fs.readFileSync(filePath);
-                    const type = await fileTypeFromBuffer(fileBuffer);
+                    const type = await fromBuffer(fileBuffer);
                     if (type) {
                         mimeType = type.mime;
                     }

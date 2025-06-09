@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 import { asyncHandler } from '../utils/asyncHandler';
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer } from 'file-type';
 
 const router = express.Router();
 
@@ -37,9 +37,8 @@ router.get('/preview', asyncHandler(async (req: Request, res: Response) => {
         
         // Intentar determinar el tipo MIME por el contenido del archivo
         let contentType = 'application/octet-stream';
-        
-        // Primero intentamos detectar el tipo por el contenido del archivo
-        const fileType = await fileTypeFromBuffer(fileContent);
+          // Primero intentamos detectar el tipo por el contenido del archivo
+        const fileType = await fromBuffer(fileContent);
         if (fileType) {
             contentType = fileType.mime;
         } else {

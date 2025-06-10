@@ -276,13 +276,20 @@ export default function Shared() {
                         {sharedByMe.length === 0 ? (
                             <p className="no-files">No has compartido ningún archivo</p>
                         ) : (
-                            groupSharedFiles(sharedByMe).map((file) => (
-                                <div 
+                            groupSharedFiles(sharedByMe).map((file) => (                                <div 
                                     key={file.id} 
-                                    className="file-card"                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
-                                    onContextMenu={(e) => {
-                                        e.preventDefault();
+                                    className="file-card"
+                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}                                    onContextMenu={(e) => {
                                         handleContextMenu(e, file.file_path, false);
+                                    }}
+                                    onTouchStart={(e) => {
+                                        handleContextMenu(e, file.file_path, false);
+                                    }}
+                                    style={{ 
+                                        WebkitTouchCallout: 'none', 
+                                        WebkitUserSelect: 'none',
+                                        userSelect: 'none',
+                                        touchAction: 'none'
                                     }}
                                 >
                                     <span className="file-icon">

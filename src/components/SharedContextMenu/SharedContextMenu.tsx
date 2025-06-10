@@ -1,5 +1,6 @@
 import { FC, useEffect, useRef } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
+import './SharedContextMenu.css';
 
 interface SharedContextMenuProps {
     x: number;
@@ -15,11 +16,34 @@ export const SharedContextMenu: FC<SharedContextMenuProps> = ({
     onUnshare
 }) => {
     const { effectiveMode } = useDarkMode();
-    const menuRef = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                // Si el click o touch fue fuera del menú, cerrarlo
+                const menu = menuRef.current;
+                if (menu) {
+                    menu.style.display = 'none';
+                }
+            }
+        };
+
+        // Agregar los event listeners al documento
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('touchstart', handleClickOutside);
+
+        return () => {
+            // Limpiar los event listeners cuando el componente se desmonte
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('touchstart', handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         const menu = menuRef.current;
         if (!menu) return;
+
+        // Resetear el display a block cuando cambian las coordenadas
+        menu.style.display = 'block';
 
         const rect = menu.getBoundingClientRect();
         const viewportWidth = window.innerWidth;

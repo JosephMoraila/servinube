@@ -57,13 +57,19 @@
     gap: 1.5rem;
 }
 
-.file-card {
-    background-color: var(--card-background);
+.file-card {    background-color: var(--card-background);
     border-radius: 0.5rem;
     padding: 1rem;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
     border: 1px solid var(--border-color);
+    -webkit-touch-callout: none;  /* iOS Safari */
+    -webkit-user-select: none;    /* Safari */
+    -khtml-user-select: none;     /* Konqueror HTML */
+    -moz-user-select: none;       /* Firefox */
+    -ms-user-select: none;        /* Internet Explorer/Edge */
+    user-select: none;            /* Non-prefixed version */
+    touch-action: none;           /* Prevent default touch actions */
 }
 
 .shared-container.dark .file-card {

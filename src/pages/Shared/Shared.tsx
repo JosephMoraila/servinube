@@ -205,6 +205,7 @@ export default function Shared() {
      * @param file - The file path to unshare
      */
     const handleUnshare = async (file: string) => {
+        console.log('Unsharing file:', file);
         try {
             await axios.delete(`${API_BASE_URL}/api/unshareFile`, {
                 params: { 

@@ -11,9 +11,12 @@ import './Shared.css';
 import { getFileIcon } from '../../utils/fileIcons';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { useAuth } from '../../components/ProtectedRoute/ProtectedRoute';
+import { useContextMenu } from '../../hooks/useContextMenu';
+import { useMessageBoxContext } from '../../contexts/MessageBoxContext';
 import API_BASE_URL from '../../constants/PAGE_URL';
 import axios from 'axios';
 import ModalPreviewFile from '../../components/ModalPreviewFile/ModalPreviewFile';
+import { SharedContextMenu } from '../../components/SharedContextMenu/SharedContextMenu';
 
 /** 
  * Interface representing a shared file's data structure
@@ -24,6 +27,7 @@ interface SharedFile {
     file_name: string;    // Name of the file
     owner_id: number;     // ID of the file's owner
     owner_name: string;   // Name of the file's owner
+    shared_with_id?: number;   // ID of the user the file is shared with (optional)
     shared_with_name?: string;  // Name of the user the file is shared with (optional)
     shared_at: string;    // Timestamp when the file was shared
     mimeType?: string;    // MIME type of the file (optional)
@@ -51,6 +55,8 @@ export default function Shared() {
     const [sharedWithMe, setSharedWithMe] = useState<SharedFile[]>([]);
     const [activeTab, setActiveTab] = useState<'shared-by-me' | 'shared-with-me'>('shared-with-me');
     const [preview, setPreview] = useState<{ url: string; type: string; name: string; } | null>(null);
+    const { contextMenu, handleContextMenu, closeContextMenu } = useContextMenu();
+    const { setMessageMessageBox, setColorMessageBox } = useMessageBoxContext();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -194,9 +200,35 @@ export default function Shared() {
         return Array.from(groupedMap.values());
     };
 
+    /**
+     * Handles unsharing of a file
+     * @param file - The file path to unshare
+     */
+    const handleUnshare = async (file: string) => {
+        try {
+            await axios.delete(`${API_BASE_URL}/api/unshareFile`, {
+                params: { 
+                    filePath: file,
+                    userId
+                },
+                withCredentials: true
+            });
+
+            setColorMessageBox('#4BB543');
+            setMessageMessageBox('Archivo dejado de compartir exitosamente');
+            fetchSharedFiles(); // Refresh the list
+            closeContextMenu();
+        } catch (error) {
+            console.error('Error al dejar de compartir archivo:', error);
+            setColorMessageBox('#ff0000');
+            setMessageMessageBox('Error al dejar de compartir el archivo');
+        }
+    };
+
     // Component rendering
     return (
-        <div className={`shared-container ${effectiveMode === 'dark' ? 'dark' : ''}`}>
+        <div className={`shared-container ${effectiveMode === 'dark' ? 'dark' : ''}`}
+             onClick={closeContextMenu}>
             <div className={`shared-tabs ${effectiveMode === 'dark' ? 'dark' : ''}`}>
                 <button 
                     className={`tab-button ${activeTab === 'shared-with-me' ? 'active' : ''}`}
@@ -246,8 +278,11 @@ export default function Shared() {
                             groupSharedFiles(sharedByMe).map((file) => (
                                 <div 
                                     key={file.id} 
-                                    className="file-card"
-                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
+                                    className="file-card"                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
+                                    onContextMenu={(e) => {
+                                        e.preventDefault();
+                                        handleContextMenu(e, file.file_path, false);
+                                    }}
                                 >
                                     <span className="file-icon">
                                         {getFileIcon(file.file_name, false, file.mimeType)}
@@ -266,7 +301,14 @@ export default function Shared() {
                         )}
                     </div>
                 )}
-            </div>
+            </div>            {contextMenu && activeTab === 'shared-by-me' && (
+                <SharedContextMenu
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    file={contextMenu.file}
+                    onUnshare={handleUnshare}
+                />
+            )}
 
             {preview && (
                 <ModalPreviewFile

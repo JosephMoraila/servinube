@@ -20,6 +20,7 @@ import permanentDeleteRouter from './routes/permanentDelete';
 import sharedFilesRouter from './routes/sharedFiles';
 import searchUsersRouter from './routes/searchUser';
 import shareFileRouter from './routes/shareFile';
+import unshareFileRouter from './routes/unshareFile';
 
 dotenv.config();
 
@@ -65,6 +66,7 @@ app.use("/api", permanentDeleteRouter);
 app.use("/api", sharedFilesRouter);
 app.use("/api", searchUsersRouter);
 app.use("/api", shareFileRouter);
+app.use("/api", unshareFileRouter);
 
 
 // Middleware de manejo de errores

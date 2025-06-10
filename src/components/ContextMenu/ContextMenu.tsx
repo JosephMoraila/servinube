@@ -61,10 +61,9 @@ export const ContextMenu: FC<ContextMenuProps> = ({
             COMPARTIR
           </div>
         </>
-      )}
-      <div className="menu-item delete" onClick={() => onDelete(file, isDirectory)}>
-        <span className="icon">🗑️</span>
-        {isDirectory ? 'ELIMINAR CARPETA' : 'ELIMINAR ARCHIVO'}
+      )}      <div className="menu-item delete" onClick={() => onDelete(file, isDirectory)}>
+        <span className="icon">🚫</span>
+        DEJAR DE COMPARTIR
       </div>
     </div>
   );

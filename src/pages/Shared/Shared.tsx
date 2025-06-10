@@ -29,6 +29,20 @@ interface SharedFile {
     mimeType?: string;    // MIME type of the file (optional)
 }
 
+/**
+ * Interface for grouped shared files
+ */
+interface GroupedSharedFile {
+    id: number;           // ID of one of the share instances
+    file_path: string;    // File path
+    file_name: string;    // Name of the file
+    owner_id: number;     // Owner's ID
+    owner_name: string;   // Owner's name
+    shared_with: string[];// List of users the file is shared with
+    shared_at: string;    // Latest share timestamp
+    mimeType?: string;    // MIME type
+}
+
 export default function Shared() {
     // Hooks and state management
     const userId = useAuth().userId;
@@ -148,6 +162,38 @@ export default function Shared() {
         }
     };
 
+    /**
+     * Groups shared files by file name and combines the shared_with_name into an array
+     * @param files - Array of shared files to group
+     * @returns Array of grouped shared files
+     */
+    const groupSharedFiles = (files: SharedFile[]): GroupedSharedFile[] => {
+        const groupedMap = files.reduce((acc, file) => {
+            if (!acc.has(file.file_path)) {
+                acc.set(file.file_path, {
+                    id: file.id,
+                    file_path: file.file_path,
+                    file_name: file.file_name,
+                    owner_id: file.owner_id,
+                    owner_name: file.owner_name,
+                    shared_with: file.shared_with_name ? [file.shared_with_name] : [],
+                    shared_at: file.shared_at,
+                    mimeType: file.mimeType
+                });
+            } else if (file.shared_with_name) {
+                const existing = acc.get(file.file_path)!;
+                existing.shared_with.push(file.shared_with_name);
+                // Actualizar la fecha si es más reciente
+                if (new Date(file.shared_at) > new Date(existing.shared_at)) {
+                    existing.shared_at = file.shared_at;
+                }
+            }
+            return acc;
+        }, new Map<string, GroupedSharedFile>());
+
+        return Array.from(groupedMap.values());
+    };
+
     // Component rendering
     return (
         <div className={`shared-container ${effectiveMode === 'dark' ? 'dark' : ''}`}>
@@ -197,7 +243,7 @@ export default function Shared() {
                         {sharedByMe.length === 0 ? (
                             <p className="no-files">No has compartido ningún archivo</p>
                         ) : (
-                            sharedByMe.map((file) => (
+                            groupSharedFiles(sharedByMe).map((file) => (
                                 <div 
                                     key={file.id} 
                                     className="file-card"
@@ -209,7 +255,7 @@ export default function Shared() {
                                     <div className="file-info">
                                         <p className="file-name">{file.file_name}</p>
                                         <p className="shared-with">
-                                            Compartido con: {file.shared_with_name}
+                                            Compartido con: {file.shared_with.join(', ')}
                                         </p>
                                         <p className="shared-date">
                                             {new Date(file.shared_at).toLocaleDateString()}

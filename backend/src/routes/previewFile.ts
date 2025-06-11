@@ -17,7 +17,10 @@ router.get('/preview', asyncHandler(async (req: Request, res: Response) => {
     }
 
     try {
-        const basePath = path.join(process.cwd(), 'src', 'uploads', userId.toString());
+        const isCompiled = __dirname.includes('dist');
+        const baseDir = isCompiled ? 'dist/uploads' : 'src/uploads';
+        const basePath = path.join(process.cwd(), baseDir, userId.toString());
+
         console.log('📁 Base path for files:', basePath);
         console.log('📁 Current working directory:', process.cwd());
         const filePath = folder 

@@ -180,8 +180,9 @@ router.post("/create-folder", asyncHandler(async (req: Request, res: Response) =
     console.log("📋 Datos recibidos:", req.body);
 
     const { userId, folder } = req.body;
+    const folderSanitizado = folder.trim().replace(/\s+/g, ' ')
 
-    if (!userId || !folder) {
+    if (!userId || !folderSanitizado) {
         return res.status(400).json({
             success: false,
             message: "Se requiere userId y nombre de carpeta"
@@ -189,7 +190,7 @@ router.post("/create-folder", asyncHandler(async (req: Request, res: Response) =
     }
 
     try {
-        const folderPath = path.join(uploadDir, userId.toString(), folder);
+        const folderPath = path.join(uploadDir, userId.toString(), folderSanitizado);
         
         if (fs.existsSync(folderPath)) {
             return res.status(400).json({
@@ -204,7 +205,7 @@ router.post("/create-folder", asyncHandler(async (req: Request, res: Response) =
         return res.status(200).json({
             success: true,
             message: "Carpeta creada correctamente",
-            path: folder
+            path: folderSanitizado
         });
     } catch (error) {
         console.error("❌ Error al crear carpeta:", error);

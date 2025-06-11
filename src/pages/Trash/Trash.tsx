@@ -65,9 +65,10 @@ const Trash = () => {
       fetchTrashFiles();
     }
   }, [userId]);
-
   const handleContextMenu = (e: React.MouseEvent, file: TrashFile) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log('Context menu triggered', { x: e.pageX, y: e.pageY }); // Debug log
     setContextMenu({
       x: e.pageX,
       y: e.pageY,
@@ -279,13 +280,40 @@ const Trash = () => {
       default:
         return '📄';
     }
-  };
+  };  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      // Debug log
+      console.log('Global click', {
+        target: e.target,
+        isContextMenu: (e.target as Element).closest('.context-menu'),
+        hasContextMenu: !!contextMenu
+      });
 
-  useEffect(() => {
-    const handleGlobalClick = () => setContextMenu(null);
-    window.addEventListener('click', handleGlobalClick);
-    return () => window.removeEventListener('click', handleGlobalClick);
-  }, []);
+      // Solo cerramos el menú si:
+      // 1. El menú está abierto
+      // 2. El clic no fue dentro del menú contextual
+      // 3. El clic no fue un clic derecho
+      if (contextMenu && 
+          !(e.target as Element).closest('.context-menu') && 
+          e.button !== 2) {
+        setContextMenu(null);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && contextMenu) {
+        setContextMenu(null);
+      }
+    };
+
+    window.addEventListener('mousedown', handleGlobalClick);
+    window.addEventListener('keydown', handleEscape);
+    
+    return () => {
+      window.removeEventListener('mousedown', handleGlobalClick);
+      window.removeEventListener('keydown', handleEscape);
+    };
+  }, [contextMenu]);
 
   return (
     <div className={`trash-container ${effectiveMode === 'dark' ? 'dark' : ''}`}>
@@ -295,12 +323,25 @@ const Trash = () => {
           <p className="no-files">No hay archivos en la papelera</p>
         ) : (
           <div className="files-grid">
-            {files.map((file) => (
-              <div
+            {files.map((file) => (              <div
                 key={file.pathName}
                 className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
-                onClick={() => handleFileClick(file)}
-                onContextMenu={(e) => handleContextMenu(e, file)}
+                onClick={(e) => {
+                  // Solo ejecutar handleFileClick si no fue un click derecho
+                  if (e.button !== 2) {
+                    handleFileClick(file);
+                  }
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleContextMenu(e, file);
+                }}
+                style={{
+                  WebkitTouchCallout: 'none',
+                  WebkitUserSelect: 'none',
+                  userSelect: 'none'
+                }}
               >
                 <div className="file-icon">{getFileIcon(file)}</div>
                 <div className="file-info">
@@ -314,12 +355,16 @@ const Trash = () => {
             ))}
           </div>
         )}
-      </div>
-
-      {contextMenu && (
+      </div>      {contextMenu && (
         <div 
           className={`context-menu ${effectiveMode === 'dark' ? 'dark' : ''}`}
-          style={{ top: contextMenu.y, left: contextMenu.x }}
+          style={{ 
+            position: 'fixed',
+            top: contextMenu.y,
+            left: contextMenu.x,
+            display: 'block',
+            zIndex: 1000
+          }}
         >
           <div className="menu-item" onClick={() => handleRestore(contextMenu.file)}>
             <span className="icon">🔄</span>

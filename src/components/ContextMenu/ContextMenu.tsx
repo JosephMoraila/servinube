@@ -1,6 +1,7 @@
 import { FC, useEffect, useRef } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { ContextMenuProps } from '../../interfaces/component.interfaces';
+import './ContextMenu.css';
 
 export const ContextMenu: FC<ContextMenuProps> = ({
   x,
@@ -43,12 +44,11 @@ export const ContextMenu: FC<ContextMenuProps> = ({
     menu.style.left = `${adjustedX}px`;
     menu.style.top = `${adjustedY}px`;
   }, [x, y]);
-
   return (
     <div 
       ref={menuRef}
       className={`context-menu ${effectiveMode === 'dark' ? 'dark' : ''}`}
-      style={{ position: 'fixed' }}
+      style={{ position: 'fixed', display: 'block' }}
     >
       {!isDirectory && (
         <>

@@ -388,15 +388,16 @@ const Feed = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
   useEffect(() => {
-    const handleGlobalClick = () => closeContextMenu();
+    const handleGlobalClick = (e: MouseEvent) => {
+      // Solo cerramos el menú si el clic no fue dentro de un elemento con la clase context-menu
+      if (!(e.target as Element).closest('.context-menu')) {
+        closeContextMenu();
+      }
+    };
     window.addEventListener('click', handleGlobalClick);
     return () => window.removeEventListener('click', handleGlobalClick);
   }, [closeContextMenu]);
-
-
-
 
   return (
     <div 
@@ -448,12 +449,20 @@ const Feed = () => {
 
       <div className="files-container">
         <div className="files-grid">
-          {files.map((file) => (
-            <div
+          {files.map((file) => (            <div
               key={file.name}
               className={`file-item ${effectiveMode === 'dark' ? 'dark' : ''}`}
-              onClick={() => handleFileClick(file)}
-              onContextMenu={(e) => handleContextMenu(e, file.name, file.isDirectory)}
+              onClick={(e) => {
+                // Solo ejecutar handleFileClick si no fue un click derecho
+                if (e.button !== 2) {
+                  handleFileClick(file);
+                }
+              }}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleContextMenu(e, file.name, file.isDirectory);
+              }}
             >
               <span className="file-icon">{getFileIcon(file.name, file.isDirectory, file.mimeType)}</span>
               <span className="file-name">{file.name}</span>

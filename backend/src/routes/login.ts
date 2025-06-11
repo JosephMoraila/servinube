@@ -76,7 +76,7 @@ router.post("/login", asyncHandler(async (req: Request, res: Response) => {
         console.error("Error en login:", error);
         return res.status(500).json({ 
             success: false, 
-            message: "Error interno del servidor" 
+            message: "Usuario o contraseña incorrectos" 
         });
     }
 }));

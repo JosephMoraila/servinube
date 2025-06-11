@@ -19,7 +19,6 @@ const SettingsAccount: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [userName, setUserName] = useState<string | null>(null);
-    const [isNameFetched, setIsNameFetched] = useState<boolean>(false);
 
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]); // Cambiar el estado de error a un arreglo
@@ -127,7 +126,6 @@ const SettingsAccount: React.FC = () => {
 
         if (cachedName) {
             setUserName(cachedName);
-            setIsNameFetched(true);
         } else {
             const fetchUserName = async () => {
                 try {
@@ -142,8 +140,6 @@ const SettingsAccount: React.FC = () => {
                     }
                 } catch (error) {
                     console.error('Error al obtener el nombre de usuario:', error);
-                } finally {
-                    setIsNameFetched(true);
                 }
             };
 

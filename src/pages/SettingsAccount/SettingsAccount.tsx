@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import './SettingsAccount.css';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import MessageBox from '../../components/MessageBox/MessageBox';
@@ -18,6 +18,9 @@ const SettingsAccount: React.FC = () => {
     const [newPassword, setNewPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [userName, setUserName] = useState<string | null>(null);
+    const [isNameFetched, setIsNameFetched] = useState<boolean>(false);
+
 
     const [errorMessages, setErrorMessages] = useState<string[]>([]); // Cambiar el estado de error a un arreglo
     const handleLogout = async () => {
@@ -28,6 +31,7 @@ const SettingsAccount: React.FC = () => {
             });
     
             if (response.data.success) {
+                localStorage.removeItem('userName');
                 setMessageMessageBox('Sesión cerrada correctamente');
                 setColorMessageBox('#008000');
                 navigate('/');
@@ -102,6 +106,7 @@ const SettingsAccount: React.FC = () => {
             );
 
             if (response.data.success) {
+                localStorage.removeItem('userName');
                 setMessageMessageBox('Cuenta eliminada correctamente');
                 setColorMessageBox('#008000');
                 navigate('/');
@@ -114,6 +119,37 @@ const SettingsAccount: React.FC = () => {
             setIsLoadingBar(false);
         }
     };
+
+    useEffect(() => {
+        if (!userId) return;
+
+        const cachedName = localStorage.getItem('userName');
+
+        if (cachedName) {
+            setUserName(cachedName);
+            setIsNameFetched(true);
+        } else {
+            const fetchUserName = async () => {
+                try {
+                    const response = await axios.get(`${API_BASE_URL}/api/get-name`, {
+                        params: { userId },
+                        withCredentials: true
+                    });
+
+                    if (response.data.success && response.data.name) {
+                        setUserName(response.data.name);
+                        localStorage.setItem('userName', response.data.name);
+                    }
+                } catch (error) {
+                    console.error('Error al obtener el nombre de usuario:', error);
+                } finally {
+                    setIsNameFetched(true);
+                }
+            };
+
+            fetchUserName();
+        }
+    }, [userId]);
 
 
     const [activeSetting, setActiveSetting] = useState<string>('general');
@@ -137,6 +173,8 @@ const SettingsAccount: React.FC = () => {
                     return (
                         <>
                             <p><strong>Ajusta los detalles de tu cuenta.</strong></p>
+                            <br />
+                            <p>Nombre usuario: {userName || 'Cargando...'}</p>
                             <br />
                             <form onSubmit={handlePasswordChange}>
                                 <p>Nueva contraseña:</p>

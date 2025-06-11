@@ -39,6 +39,6 @@ export const generateToken = (userId: number) => {  // Cambiar el tipo a number
     return jwt.sign(
         { userId }, 
         JWT_SECRET, 
-        { expiresIn: "1h" }
+        { expiresIn: "7d" }
     );
 };

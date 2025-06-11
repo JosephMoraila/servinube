@@ -64,14 +64,41 @@ const Trash = () => {
     if (userId) {
       fetchTrashFiles();
     }
-  }, [userId]);
-  const handleContextMenu = (e: React.MouseEvent, file: TrashFile) => {
+  }, [userId]);  const handleContextMenu = (e: React.MouseEvent, file: TrashFile) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Context menu triggered', { x: e.pageX, y: e.pageY }); // Debug log
+
+    // Obtener las dimensiones de la ventana
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Ancho estimado del menú contextual para móviles (ajusta según necesites)
+    const menuWidth = window.innerWidth <= 768 ? 180 : 200;
+    const menuHeight = 120; // Altura estimada del menú
+
+    // Calcular posición ajustada
+    let x = e.pageX;
+    let y = e.pageY;
+
+    // Ajustar horizontalmente si se sale de la pantalla
+    if (x + menuWidth > viewportWidth) {
+      x = viewportWidth - menuWidth - 10; // 10px de margen
+    }
+    if (x < 0) {
+      x = 10; // 10px de margen
+    }
+
+    // Ajustar verticalmente si se sale de la pantalla
+    if (y + menuHeight > viewportHeight) {
+      y = viewportHeight - menuHeight - 10;
+    }
+    if (y < 0) {
+      y = 10;
+    }
+
     setContextMenu({
-      x: e.pageX,
-      y: e.pageY,
+      x,
+      y,
       file
     });
   };
@@ -336,6 +363,64 @@ const Trash = () => {
                   e.preventDefault();
                   e.stopPropagation();
                   handleContextMenu(e, file);
+                }}
+                onTouchStart={(e) => {
+                  let isLongPress = false;
+                  const touchStartTime = new Date().getTime();
+                  const touchTimeout = setTimeout(() => {
+                    isLongPress = true;
+                    const touch = e.touches[0];
+                    
+                    // Obtener las dimensiones de la ventana
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+                    const menuWidth = 180; // Ancho fijo para móviles
+                    const menuHeight = 120; // Altura estimada del menú
+
+                    // Calcular posición ajustada
+                    let x = touch.pageX;
+                    let y = touch.pageY;
+
+                    // Ajustar horizontalmente si se sale de la pantalla
+                    if (x + menuWidth > viewportWidth) {
+                      x = viewportWidth - menuWidth - 10;
+                    }
+                    if (x < 0) {
+                      x = 10;
+                    }
+
+                    // Ajustar verticalmente si se sale de la pantalla
+                    if (y + menuHeight > viewportHeight) {
+                      y = viewportHeight - menuHeight - 10;
+                    }
+                    if (y < 0) {
+                      y = 10;
+                    }
+
+                    setContextMenu({
+                      x,
+                      y,
+                      file
+                    });
+                  }, 500);
+
+                  const handleTouchEnd = () => {
+                    clearTimeout(touchTimeout);
+                    if (!isLongPress) {
+                      handleFileClick(file);
+                    }
+                    document.removeEventListener('touchend', handleTouchEnd);
+                    document.removeEventListener('touchmove', handleTouchMove);
+                  };
+
+                  const handleTouchMove = () => {
+                    clearTimeout(touchTimeout);
+                    document.removeEventListener('touchend', handleTouchEnd);
+                    document.removeEventListener('touchmove', handleTouchMove);
+                  };
+
+                  document.addEventListener('touchend', handleTouchEnd);
+                  document.addEventListener('touchmove', handleTouchMove);
                 }}
                 style={{
                   WebkitTouchCallout: 'none',

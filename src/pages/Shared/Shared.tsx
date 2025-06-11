@@ -278,18 +278,52 @@ export default function Shared() {
                         ) : (
                             groupSharedFiles(sharedByMe).map((file) => (                                <div 
                                     key={file.id} 
-                                    className="file-card"
-                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}                                    onContextMenu={(e) => {
+                                    className="file-card"                                    onClick={() => handleFileClick(file.file_path, file.owner_id)}
+                                    onContextMenu={(e) => {
+                                        e.preventDefault();
                                         handleContextMenu(e, file.file_path, false);
                                     }}
                                     onTouchStart={(e) => {
-                                        handleContextMenu(e, file.file_path, false);
+                                        let isLongPress = false;
+                                        const touchStartTime = new Date().getTime();
+                                        const touchTimeout = setTimeout(() => {
+                                            isLongPress = true;                                            const touch = e.touches[0];
+                                            handleContextMenu(
+                                                { pageX: touch.pageX, pageY: touch.pageY },
+                                                file.file_path,
+                                                false
+                                            );
+                                        }, 500);
+
+                                        const handleTouchEnd = () => {
+                                            clearTimeout(touchTimeout);
+                                            const touchEndTime = new Date().getTime();
+                                            const touchDuration = touchEndTime - touchStartTime;
+                                            
+                                            // Solo realizar el click si no fue long press
+                                            if (!isLongPress && touchDuration < 500) {
+                                                handleFileClick(file.file_path, file.owner_id);
+                                            }
+                                            
+                                            document.removeEventListener('touchend', handleTouchEnd);
+                                            document.removeEventListener('touchmove', handleTouchMove);
+                                        };
+
+                                        const handleTouchMove = () => {
+                                            isLongPress = false;
+                                            clearTimeout(touchTimeout);
+                                            document.removeEventListener('touchend', handleTouchEnd);
+                                            document.removeEventListener('touchmove', handleTouchMove);
+                                        };
+
+                                        document.addEventListener('touchend', handleTouchEnd, { passive: true });
+                                        document.addEventListener('touchmove', handleTouchMove, { passive: true });
                                     }}
                                     style={{ 
                                         WebkitTouchCallout: 'none', 
                                         WebkitUserSelect: 'none',
                                         userSelect: 'none',
-                                        touchAction: 'none'
+                                        touchAction: 'pan-y'
                                     }}
                                 >
                                     <span className="file-icon">
@@ -315,6 +349,7 @@ export default function Shared() {
                     y={contextMenu.y}
                     file={contextMenu.file}
                     onUnshare={handleUnshare}
+                    onClose={closeContextMenu}
                 />
             )}
 

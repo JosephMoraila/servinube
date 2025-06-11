@@ -7,23 +7,24 @@ interface SharedContextMenuProps {
     y: number;
     file: string;
     onUnshare: (file: string) => void;
+    onClose: () => void;
 }
 
 export const SharedContextMenu: FC<SharedContextMenuProps> = ({
     x,
     y,
     file,
-    onUnshare
+    onUnshare,
+    onClose
 }) => {
     const { effectiveMode } = useDarkMode();
-    const menuRef = useRef<HTMLDivElement>(null);    useEffect(() => {
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
         const handleClickOutside = (event: MouseEvent | TouchEvent) => {
             if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
                 // Si el click o touch fue fuera del menú, cerrarlo
-                const menu = menuRef.current;
-                if (menu) {
-                    menu.style.display = 'none';
-                }
+                onClose();
             }
         };
 

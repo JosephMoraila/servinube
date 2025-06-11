@@ -366,7 +366,6 @@ const Trash = () => {
                 }}
                 onTouchStart={(e) => {
                   let isLongPress = false;
-                  const touchStartTime = new Date().getTime();
                   const touchTimeout = setTimeout(() => {
                     isLongPress = true;
                     const touch = e.touches[0];

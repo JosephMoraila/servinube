@@ -24,13 +24,17 @@ const Register = () => {
 
   // Estados de UI
   const [error, setError] = useState('');
-
   // Manejadores de eventos
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
+    // Si es el campo de userName, limpia los espacios extras
+    const cleanedValue = id === 'userName' 
+      ? value.trim().replace(/\s+/g, ' ') // Limpia espacios al inicio/final y reduce múltiples espacios a uno
+      : value;
+    
     setFormData(prev => ({
       ...prev,
-      [id]: value
+      [id]: cleanedValue
     }));
   };
 

@@ -43,3 +43,8 @@ export interface ContextMenuState {
   file: string;
   isDirectory: boolean;
 }
+
+export interface ListUsersProps {
+  onClose: () => void;
+  isOpen: boolean;
+}

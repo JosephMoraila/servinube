@@ -22,6 +22,7 @@ import searchUsersRouter from './routes/searchUser';
 import shareFileRouter from './routes/shareFile';
 import unshareFileRouter from './routes/unshareFile';
 import getName from './routes/getName';
+import listAllUsersRouter from './routes/listAllUsers';
 
 dotenv.config();
 
@@ -69,6 +70,7 @@ app.use("/api", searchUsersRouter);
 app.use("/api", shareFileRouter);
 app.use("/api", unshareFileRouter);
 app.use("/api", getName);
+app.use("/api", listAllUsersRouter);
 
 
 // Middleware de manejo de errores

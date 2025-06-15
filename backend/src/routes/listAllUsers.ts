@@ -7,6 +7,7 @@ router.get('/list-all-users', asyncHandler(async (req: Request, res: Response) =
     try {
         // Consulta a la base de datos para obtener todos los usuarios
         const result = await pool.query('SELECT id, nombre_publico FROM usuarios');
+        console.log('🔍 Listando todos los usuarios:', result.rows.length);
 
         if (result.rows.length === 0) {
             console.log('⚠️ No se encontraron usuarios');

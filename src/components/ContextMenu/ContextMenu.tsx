@@ -2,6 +2,7 @@ import { FC, useEffect, useRef } from 'react';
 import { useDarkMode } from '../../contexts/DarkModeContext';
 import { ContextMenuProps } from '../../interfaces/component.interfaces';
 import './ContextMenu.css';
+import ListUsersDialog from '../ListUsersDialog/ListUsersDialog';
 
 export const ContextMenu: FC<ContextMenuProps> = ({
   x,

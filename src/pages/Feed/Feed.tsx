@@ -14,6 +14,7 @@ import { useFileManager } from '../../hooks/useFileManager';
 import { useContextMenu } from '../../hooks/useContextMenu';
 import { getFileIcon } from '../../utils/fileIcons';
 import { FileItem, PreviewState, DeleteDialogState } from '../../interfaces/file.interfaces';
+import ListUsersDialog from "../../components/ListUsersDialog/ListUsersDialog";
 
 /**
  * Feed Component
@@ -555,13 +556,9 @@ const Feed = () => {
         typeInput="text"
       />
 
-      <ShareDialog
+      <ListUsersDialog 
+       onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
         isOpen={shareDialogState.isOpen}
-        onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
-        onShare={handleShareSubmit}
-        fileName={shareDialogState.fileName}
-        isSharing={shareDialogState.isSharing}
-        error={shareDialogState.error}
       />
     </div>
   );

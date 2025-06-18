@@ -1,35 +1,35 @@
-.dialog-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+.user-list {
+  list-style-type: none; /* elimina los puntos de la lista */
+  padding-left: 0; /* opcional, elimina el espacio extra */
 }
-.dialog-container {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  width: 400px;
+
+.user-item {
+  cursor: pointer; /*Al pasar el cursor por el elemento se hace ua mano*/
+  padding: 8px; /*Un espaciado de 8 pixles en todos sus lados*/
+  transition: background-color 0.2s ease; /** Transición suave al cambiar el color de fondo */
 }
-.dialog-header {
-  padding: 16px;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 18px;
-  font-weight: bold;
+
+.user-item:hover {
+  background-color: #eee;
 }
-.dialog-body {
-  padding: 16px;
-  max-height: 300px;
-  overflow-y: auto;
+
+.user-item.dark:hover {
+  background-color: #555; /* Cambia el color de fondo al pasar el cursor en modo oscuro */
 }
-.dialog-footer {
-  padding: 16px;
-  border-top: 1px solid #e0e0e0;
-  display: flex;
-  justify-content: flex-end;
+
+.user-item.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.user-item.selected:hover {
+  background-color: #45a049; /* Cambia el color de fondo al pasar el cursor en modo seleccionado */
+}
+
+.share-button-ok{
+  background-color: #1e7921;
+}
+
+.share-button-ok:hover{
+  background-color: #135b15;
 }

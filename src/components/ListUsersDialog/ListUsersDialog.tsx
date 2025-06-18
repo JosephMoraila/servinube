@@ -4,10 +4,28 @@ import { ListUsersProps } from '../../interfaces/component.interfaces';
 import '../CuadroDialogoInput/CuadroDialogoInput.css';
 import './ListUsersDialog.css'; // Asegúrate de tener estilos para el modal
 import API_BASE_URL from '../../constants/PAGE_URL';
+import { useAuth } from '../ProtectedRoute/ProtectedRoute';
 
-const ListUsersDialog: FC<ListUsersProps> = ({ onClose, isOpen }) => {
+interface User {
+  id: number;
+  name: string;
+}
+
+interface ShareDialogProps {
+    isOpen: boolean;
+    onClose: () => void;
+    onShare: (username: string) => void;
+    fileName: string;
+    isSharing: boolean;
+    error: string | null;
+}
+
+
+const ListUsersDialog: FC<ShareDialogProps> = ({ isOpen,onClose,onShare,fileName,isSharing,error }) => {
+  console.log(`isOpen: ${isOpen}, onClose: ${onClose}, onShare: ${onShare}, fileName: ${fileName}, isSharing: ${isSharing}, error: ${error}`);
   const { effectiveMode } = useDarkMode(); // ✅ Hook al principio
-  const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]); // ✅ Hook al principio
+  const [users, setUsers] = useState<Array<User>>([]); // ✅ Hook al principio
+  const { userId } = useAuth(); // Hook para obtener el usuario autenticado
 
   // Cierra el modal con tecla ESC
   useEffect(() => {
@@ -36,11 +54,15 @@ useEffect(() => {
       console.log('🔍 Fetching all users from API:', response);
       if (!response.ok) throw new Error('Error fetching users');
       const data = await response.json();
-      if (data.success) {
-        setUsers(data.users);
-      } else {
+      if (data.success && userId !== null) {
+        // Filtrar usuarios para excluir al usuario autenticado
+        const filteredUsers = data.users.filter((user: { id: number }) => user.id !== Number(userId));
+        setUsers(filteredUsers);
+      }
+      else {
         console.error('Error fetching users:', data.error);
       }
+
     } catch (error) {
       console.error('❌ Error al listar usuarios:', error);
     }
@@ -67,6 +89,19 @@ useEffect(() => {
     );
 };
 
+  const handleSelectAll = () => {
+  // Selecciona todos los usuarios
+  const allUserIds = users.map(user => user.id);
+  setSelectedUserIds(allUserIds);
+  };
+
+  const shareSelectedUsers = () => {
+    // Aquí puedes implementar la lógica para compartir los usuarios seleccionados
+    console.log('Compartiendo usuarios:', selectedUserIds);
+    // Por ejemplo, podrías hacer una llamada a una API para compartir los usuarios
+    
+  }
+
   // 👇 Esto debe ir después de los hooks
   if (!isOpen) return null;
 
@@ -87,6 +122,7 @@ useEffect(() => {
           </ul>
 
         <button onClick={onClose} className="close-button">Cerrar</button>
+        <button onClick={handleSelectAll}>Seleccionar todos</button>
         <button className='share-button-ok'>Compartir</button>
       </div>
     </div>

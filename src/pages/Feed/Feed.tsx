@@ -557,8 +557,12 @@ const Feed = () => {
       />
 
       <ListUsersDialog 
-       onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
+        onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
         isOpen={shareDialogState.isOpen}
+        onShare={ handleShareSubmit }
+        fileName={shareDialogState.fileName}
+        isSharing={shareDialogState.isSharing}
+        error={shareDialogState.error}
       />
     </div>
   );

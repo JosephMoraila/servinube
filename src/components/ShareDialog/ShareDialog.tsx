@@ -11,14 +11,7 @@ interface ShareDialogProps {
     error: string | null;
 }
 
-const ShareDialog: FC<ShareDialogProps> = ({
-    isOpen,
-    onClose,
-    onShare,
-    fileName,
-    isSharing,
-    error
-}) => {
+const ShareDialog: FC<ShareDialogProps> = ({isOpen,onClose,onShare,fileName,isSharing,error}) => {
     const { effectiveMode } = useDarkMode();
     const [username, setUsername] = useState<string>('');
 

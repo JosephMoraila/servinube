@@ -14,15 +14,24 @@ interface User {
 interface ShareDialogProps {
     isOpen: boolean;
     onClose: () => void;
-    onShare: (username: string) => void;
+    onShare: (username: string[]) => void;
     fileName: string;
     isSharing: boolean;
     error: string | null;
 }
 
-
+/**
+ * 
+ * @param param0 Props del componente ListUsersDialog
+ * @param param0.isOpen Indica si el modal está abierto
+ * @param param0.onClose Función para cerrar el modal
+ * @param param0.onShare Función para compartir un usuario
+ * @param param0.fileName Nombre del archivo a compartir
+ * @param param0.isSharing Indica si se está compartiendo
+ * @returns 
+ */
 const ListUsersDialog: FC<ShareDialogProps> = ({ isOpen,onClose,onShare,fileName,isSharing,error }) => {
-  console.log(`isOpen: ${isOpen}, onClose: ${onClose}, onShare: ${onShare}, fileName: ${fileName}, isSharing: ${isSharing}, error: ${error}`);
+  console.log(`isOpen: ${isOpen}, fileName: ${fileName}, isSharing: ${isSharing}, error: ${error}`);
   const { effectiveMode } = useDarkMode(); // ✅ Hook al principio
   const [users, setUsers] = useState<Array<User>>([]); // ✅ Hook al principio
   const { userId } = useAuth(); // Hook para obtener el usuario autenticado
@@ -98,7 +107,12 @@ useEffect(() => {
   const shareSelectedUsers = () => {
     // Aquí puedes implementar la lógica para compartir los usuarios seleccionados
     console.log('Compartiendo usuarios:', selectedUserIds);
-    // Por ejemplo, podrías hacer una llamada a una API para compartir los usuarios
+    if (selectedUserIds.length > 0) {
+      const usernames = users
+        .filter(user => selectedUserIds.includes(user.id))
+        .map(user => user.name);
+      onShare(usernames); // Llama a la función onShare con los nombres de usuario seleccionados
+    }
     
   }
 
@@ -123,7 +137,7 @@ useEffect(() => {
 
         <button onClick={onClose} className="close-button">Cerrar</button>
         <button onClick={handleSelectAll}>Seleccionar todos</button>
-        <button className='share-button-ok'>Compartir</button>
+        <button className='share-button-ok' disabled={isSharing} onClick={shareSelectedUsers}>Compartir</button>
       </div>
     </div>
   );

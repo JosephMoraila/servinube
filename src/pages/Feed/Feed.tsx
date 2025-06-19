@@ -263,28 +263,30 @@ const Feed = () => {
    * @async
    * @param {string} username - The username to share the file with
    */
-  const handleShareSubmit = async (username: string) => {
-    console.log("🔗 Compartiendo archivo:", shareDialogState.fileName, "con usuario:", username);
+  const handleShareSubmit = async (usernames: string[]) => {
+    console.log("🔗 Compartiendo archivo:", shareDialogState.fileName, "con usuarios:", usernames);
     setShareDialogState(prev => ({ ...prev, isSharing: true, error: null }));
+
     try {
       await axios.post(`${API_BASE_URL}/api/shareFile`, {
         fileName: shareDialogState.fileName,
         folder: currentFolder,
         userId,
-        username
+        usernames  // ✅ clave corregida aquí
       }, { withCredentials: true });
-      
+
       setColorMessageBox("#4BB543");
       setMessageMessageBox("Archivo compartido exitosamente");
       setShareDialogState(prev => ({ ...prev, isOpen: false }));
     } catch (error: any) {
-      console.error("Error al compartir el archivo:", error);
+      console.error("❌ Error al compartir el archivo:", error);
       const errorMessage = error.response?.data?.message || "Error al compartir el archivo";
       setShareDialogState(prev => ({ ...prev, error: errorMessage }));
     } finally {
       setShareDialogState(prev => ({ ...prev, isSharing: false }));
     }
   };
+
 
   const handlePreview = async (fileName: string) => {
     try {
@@ -556,14 +558,14 @@ const Feed = () => {
         typeInput="text"
       />
 
-      <ListUsersDialog 
+      {shareDialogState.isOpen && <ListUsersDialog 
         onClose={() => setShareDialogState(prev => ({ ...prev, isOpen: false }))}
         isOpen={shareDialogState.isOpen}
         onShare={ handleShareSubmit }
         fileName={shareDialogState.fileName}
         isSharing={shareDialogState.isSharing}
         error={shareDialogState.error}
-      />
+      />}
     </div>
   );
 };

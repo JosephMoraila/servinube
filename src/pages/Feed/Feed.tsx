@@ -565,6 +565,7 @@ const Feed = () => {
         fileName={shareDialogState.fileName}
         isSharing={shareDialogState.isSharing}
         error={shareDialogState.error}
+        currentFolder={currentFolder}
       />}
     </div>
   );

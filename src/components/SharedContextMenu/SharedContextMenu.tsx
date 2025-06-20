@@ -80,7 +80,7 @@ export const SharedContextMenu: FC<SharedContextMenuProps> = ({
         >
             <div className="menu-item delete" onClick={() => onUnshare(file)}>
                 <span className="icon">🚫</span>
-                DEJAR DE COMPARTIR
+                DEJAR DE COMPARTIR CON TODOS
             </div>
         </div>
     );

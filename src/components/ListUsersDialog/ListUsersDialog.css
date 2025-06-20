@@ -1,6 +1,9 @@
 .user-list {
-  list-style-type: none; /* elimina los puntos de la lista */
-  padding-left: 0; /* opcional, elimina el espacio extra */
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 16px;
+  max-height: clamp(30vh, 50%, 60vh); /* Altura relativa adaptable */
+  overflow-y: auto;
 }
 
 .user-item {
